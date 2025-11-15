@@ -1,11 +1,12 @@
 /* -------------------------------------------------------------------
-   STYLES GÉNÉRAUX ET PAGE D'ATTENTE (MAINTENANCE/CONSTRUCTION)
+   STYLES GÉNÉRAUX ET PAGE D'ATTENTE (FOND BLANC NEIGE)
    ------------------------------------------------------------------- */
 
 body {
-    font-family: 'Arial', sans-serif;
-    background-color: #fefefe; /* Fond neige */
-    color: #ffcc00; /* Couleur de texte dorée */
+    font-family: 'Montserrat', sans-serif;
+    /* Nouveau : Fond blanc cassé/neige */
+    background-color: #f7f7f7; 
+    color: #444444; /* Nouveau : Texte gris foncé pour la lisibilité sur fond clair */
     margin: 0;
     padding: 0;
     text-align: center;
@@ -14,200 +15,76 @@ body {
     align-items: center;
     justify-content: center;
     min-height: 100vh;
+    overflow-x: hidden;
 }
 
+/* Page d'attente */
 #page-attente {
-    padding: 30px;
-    background: rgba(253, 253, 254, 0.8); /* Fond du bloc semi-transparent */
-    border-radius: 15px;
-    box-shadow: 0 0 20px rgba(246, 245, 245, 0.956);
-    max-width: 90%;
+    /* Nouveau : Fond blanc légèrement transparent pour le contraste */
+    background: rgba(255, 255, 255, 0.95); 
+    border-radius: 20px;
+    /* Ombre subtile pour le faire ressortir du fond */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); 
+    padding: 40px 30px;
+    max-width: 700px;
+    margin: 20px;
+    animation: fadeInScale 1s ease-out forwards;
 }
 
 #page-attente h1 {
-    color: #ffcc00; /* Jaune doré pour le titre */
-    margin-bottom: 10px;
+    /* Nouveau : Écriture Dorée */
+    color: #DAA520; /* Goldenrod ou Or */ 
+    margin-bottom: 15px;
+    font-size: 2.5em;
+    /* Ombre de texte subtile pour le faire ressortir */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1); 
 }
 
 #page-attente p {
-    font-size: 1.2em;
-    line-height: 1.5;
+    font-size: 1.1em;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+#page-attente strong {
+    /* Nouveau : Mots importants en Doré */
+    color: #DAA520;
 }
 
 /* -------------------------------------------------------------------
-   EFFET SAPIN EN CONSTRUCTION (PENSÉ POUR UNE DIV SIMPLE)
+   LE SAPIN EN CONSTRUCTION (Ajustement de la couleur de l'étoile)
    ------------------------------------------------------------------- */
 
-.sapin-construction {
-    width: 200px;
-    height: 200px;
-    margin: 30px auto;
-    position: relative;
-    overflow: hidden;
-}
-
-.sapin-construction::before,
-.sapin-construction::after {
-    content: '';
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-}
-
-/* Base du Sapin (Tronc) */
-.sapin-construction::before {
-    bottom: 0;
-    width: 20px;
-    height: 40px;
-    background-color: #8b4513; /* Marron */
-    z-index: 1;
-}
-
-/* Feuillage du Sapin (Simulé par des triangles) */
-.sapin-construction::after {
-    top: 0;
-    width: 0;
-    height: 0;
-    border-left: 100px solid transparent;
-    border-right: 100px solid transparent;
-    /* La couleur verte monte progressivement */
-    border-bottom: 200px solid #1e8449; 
-    z-index: 2;
-    /* Animation de construction: la hauteur du triangle monte */
-    animation: construction-sapin 4s ease-out infinite alternate;
-    clip-path: inset(100% 0 0 0); /* Cache initialement */
-    animation: monter 4s ease-out forwards;
-}
-
-@keyframes monter {
-    0% {
-        clip-path: inset(100% 0 0 0);
-    }
-    100% {
-        clip-path: inset(0 0 0 0);
-    }
-}
-
-/* Étoile clignotante (facultatif) */
 .sapin-construction .star {
     position: absolute;
-    top: -10px;
+    top: -15px; 
     left: 50%;
     transform: translateX(-50%);
-    color: #ffd700;
-    font-size: 2em;
+    /* Nouveau : Étoile bien Dorée */
+    color: #DAA520; 
+    font-size: 3em; 
     z-index: 3;
     animation: clignoter 1.5s infinite alternate;
 }
 
-@keyframes clignoter {
-    from { opacity: 0.2; }
-    to { opacity: 1; }
-}
-
-
 /* -------------------------------------------------------------------
-   STYLES DU CALENDRIER LUI-MÊME (MASQUÉ INITIALEMENT)
+   STYLES DU CALENDRIER LUI-MÊME
    ------------------------------------------------------------------- */
-
-#calendrier {
-    display: grid;
-    grid-template-columns: repeat(6, 1fr); /* 6 colonnes pour une bonne disposition */
-    gap: 15px;
-    padding: 20px;
-    max-width: 1200px;
-    margin: 50px auto;
-}
 
 .case {
-    /* Style de la boîte de base */
-    background-color: #c0392b; /* Rouge de Noël */
-    border: 3px solid #f1c40f; /* Contour doré */
+    /* Rouge de Noël conservé pour la couleur des cases */
+    background-color: #c0392b; 
+    /* Nouveau : Contour Doré Vif */
+    border: 3px solid #DAA520; 
     border-radius: 8px;
     height: 120px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 2.5em;
-    font-weight: bold;
-    color: white;
-    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);
-    transition: transform 0.2s ease;
-    cursor: default; /* Curseur par défaut pour les cases verrouillées */
+    /* ... (reste du style de la case) ... */
+    color: white; /* Numéro de la case toujours en blanc sur le rouge */
 }
 
-/* Style pour les cases déverrouillées (clicables) */
 .case.unlocked {
-    background-color: #27ae60; /* Vert pour indiquer que c'est ouvert/cliquable */
+    background-color: #27ae60; 
     cursor: pointer;
-}
-
-.case.unlocked:hover {
-    transform: scale(1.05);
-    background-color: #2ecc71; /* Vert plus clair au survol */
-}
-
-/* Style pour les cases verrouillées (pas encore le jour J) */
-.case.locked {
-    opacity: 0.6;
-}
-
-/* Affichage du message sur la case (facultatif si vous voulez afficher '🔒' ou un message) */
-.case.locked::after {
-    content: '🔒';
-    position: absolute;
-    font-size: 0.5em;
-    top: 5px;
-    right: 5px;
-}
-
-/* -------------------------------------------------------------------
-   STYLES DE LA MODALE/POPUP
-   ------------------------------------------------------------------- */
-
-.modal {
-    /* Style pour masquer la modale par défaut et la rendre flottante */
-    display: none; 
-    position: fixed; 
-    z-index: 100; /* Assure que la modale est au-dessus de tout */
-    left: 0;
-    top: 0;
-    width: 100%; 
-    height: 100%; 
-    overflow: auto; 
-    background-color: rgba(0,0,0,0.8); /* Fond noir semi-transparent */
-}
-
-.modal-content {
-    /* Contenu de la modale */
-    background-color: #fefefe;
-    margin: 15% auto; /* 15% du haut et centré */
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%; 
-    max-width: 600px;
-    border-radius: 10px;
-    color: #0b1a29; /* Texte sombre sur fond clair */
-    position: relative;
-    animation: fadeIn 0.5s;
-}
-
-.close-button {
-    /* Bouton pour fermer la modale */
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-}
-
-.close-button:hover,
-.close-button:focus {
-    color: #c0392b;
-    text-decoration: none;
-    cursor: pointer;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0 }
-    to { opacity: 1 }
+    /* Nouveau : Lueur Dorée au lieu de blanche */
+    box-shadow: 0 0 15px rgba(218, 165, 32, 0.5); 
 }
