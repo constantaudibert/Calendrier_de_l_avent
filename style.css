@@ -1,15 +1,23 @@
 /* -------------------------------------------------------------------
+   POLICES GOOGLE FONTS
+   ------------------------------------------------------------------- */
+/* Importation des polices pour un style festif et moderne */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Satisfy&display=swap');
+
+/* -------------------------------------------------------------------
    STYLES GÉNÉRAUX ET PAGE D'ATTENTE (FOND BLANC NEIGE)
    ------------------------------------------------------------------- */
 
 body {
     font-family: 'Montserrat', sans-serif;
-    /* Nouveau : Fond blanc cassé/neige */
+    /* Fond blanc cassé/neige */
     background-color: #f7f7f7; 
-    color: #444444; /* Nouveau : Texte gris foncé pour la lisibilité sur fond clair */
+    /* Texte gris foncé pour la lisibilité sur fond clair */
+    color: #444444; 
     margin: 0;
     padding: 0;
     text-align: center;
+    /* Centrage du contenu */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -20,10 +28,10 @@ body {
 
 /* Page d'attente */
 #page-attente {
-    /* Nouveau : Fond blanc légèrement transparent pour le contraste */
+    /* Fond blanc légèrement transparent pour le contraste */
     background: rgba(255, 255, 255, 0.95); 
     border-radius: 20px;
-    /* Ombre subtile pour le faire ressortir du fond */
+    /* Ombre subtile */
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); 
     padding: 40px 30px;
     max-width: 700px;
@@ -32,8 +40,8 @@ body {
 }
 
 #page-attente h1 {
-    /* Nouveau : Écriture Dorée */
-    color: #DAA520; /* Goldenrod ou Or */ 
+    /* Écriture Dorée */
+    color: #DAA520; 
     margin-bottom: 15px;
     font-size: 2.5em;
     /* Ombre de texte subtile pour le faire ressortir */
@@ -47,44 +55,211 @@ body {
 }
 
 #page-attente strong {
-    /* Nouveau : Mots importants en Doré */
+    /* Mots importants en Doré */
     color: #DAA520;
 }
 
 /* -------------------------------------------------------------------
-   LE SAPIN EN CONSTRUCTION (Ajustement de la couleur de l'étoile)
+   LE SAPIN EN CONSTRUCTION (CORRIGÉ POUR L'AFFICHAGE)
    ------------------------------------------------------------------- */
 
+.sapin-construction {
+    /* Conteneur : ESSENTIEL pour positionner le tronc et le feuillage */
+    width: 180px; 
+    height: 200px;
+    margin: 30px auto;
+    position: relative; 
+    transform-origin: bottom center; 
+    animation: sapinPulse 2s ease-in-out infinite alternate;
+}
+
+/* Tronc (Le ::before) */
+.sapin-construction::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 25px;
+    height: 45px;
+    background-color: #8B4513; /* Marron foncé */
+    border-radius: 5px;
+    z-index: 1;
+}
+
+/* Feuillage (Le ::after) */
+.sapin-construction::after {
+    content: '';
+    position: absolute;
+    bottom: 40px; 
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    /* La propriété border crée le triangle */
+    border-left: 90px solid transparent; 
+    border-right: 90px solid transparent;
+    border-bottom: 160px solid #28a745; /* Vert sapin */
+    border-radius: 5px;
+    z-index: 2;
+    filter: drop-shadow(0 5px 8px rgba(0,0,0,0.3)); 
+    animation: constructionEffect 3s ease-in-out infinite alternate;
+}
+
+/* Étoile (Le .star) */
 .sapin-construction .star {
     position: absolute;
     top: -15px; 
     left: 50%;
     transform: translateX(-50%);
-    /* Nouveau : Étoile bien Dorée */
+    /* Étoile bien Dorée */
     color: #DAA520; 
     font-size: 3em; 
     z-index: 3;
     animation: clignoter 1.5s infinite alternate;
 }
 
+/* Keyframes des animations */
+@keyframes fadeInScale {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes clignoter {
+    0% { opacity: 0.4; transform: scale(0.9) translateX(-50%); }
+    100% { opacity: 1; transform: scale(1) translateX(-50%); }
+}
+
+@keyframes constructionEffect {
+    0% { transform: translateX(-50%) translateY(0) scaleY(0.8); opacity: 0.9; }
+    100% { transform: translateX(-50%) translateY(-10px) scaleY(1); opacity: 1; }
+}
+
+@keyframes sapinPulse {
+    0% { transform: scale(1); }
+    100% { transform: scale(1.03); }
+}
+
+
 /* -------------------------------------------------------------------
    STYLES DU CALENDRIER LUI-MÊME
    ------------------------------------------------------------------- */
 
-.case {
-    /* Rouge de Noël conservé pour la couleur des cases */
-    background-color: #c0392b; 
-    /* Nouveau : Contour Doré Vif */
-    border: 3px solid #DAA520; 
-    border-radius: 8px;
-    height: 120px;
-    /* ... (reste du style de la case) ... */
-    color: white; /* Numéro de la case toujours en blanc sur le rouge */
+#calendrier {
+    /* Grille responsive */
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); 
+    gap: 15px;
+    padding: 20px;
+    max-width: 1200px;
+    margin: 50px auto;
 }
 
-.case.unlocked {
-    background-color: #27ae60; 
-    cursor: pointer;
-    /* Nouveau : Lueur Dorée au lieu de blanche */
-    box-shadow: 0 0 15px rgba(218, 165, 32, 0.5); 
+.case {
+    /* Style de base des cases */
+    background-color: #c0392b; /* Rouge de Noël */
+    border: 3px solid #DAA520; /* Contour Doré Vif */
+    border-radius: 8px;
+    height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Satisfy', cursive; 
+    font-size: 2.8em;
+    font-weight: bold;
+    color: white; 
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease-in-out;
+    cursor: default;
+    position: relative; 
 }
+
+/* Style pour les cases déverrouillées (clicables) */
+.case.unlocked {
+    background-color: #27ae60; /* Vert */
+    cursor: pointer;
+    box-shadow: 0 0 15px rgba(218, 165, 32, 0.5); /* Lueur Dorée */
+}
+
+.case.unlocked:hover {
+    transform: scale(1.08) rotate(2deg);
+    background-color: #2ecc71; 
+}
+
+/* Style pour les cases verrouillées (non accessibles) */
+.case.locked {
+    background-color: #7f8c8d; /* Gris foncé */
+    border-color: #bdc3c7; /* Gris clair */
+    cursor: not-allowed;
+    filter: grayscale(30%); 
+}
+
+/* Cadenas sur les cases verrouillées */
+.case.locked::after {
+    content: '🔒'; 
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    font-size: 1.2em;
+    opacity: 0.8;
+}
+
+/* -------------------------------------------------------------------
+   STYLES DE LA MODALE/POPUP
+   ------------------------------------------------------------------- */
+
+.modal {
+    display: none; 
+    position: fixed; 
+    z-index: 1000; 
+    left: 0;
+    top: 0;
+    width: 100%; 
+    height: 100%; 
+    overflow: auto; 
+    background-color: rgba(0,0,0,0.85); 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: auto; 
+    padding: 30px;
+    border: 1px solid #888;
+    width: 90%; 
+    max-width: 700px;
+    border-radius: 15px;
+    color: #0d1b2a; 
+    position: relative;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7);
+    animation: slideInFromTop 0.6s ease-out forwards;
+}
+
+@keyframes slideInFromTop {
+    from { transform: translateY(-100px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.modal-content h2 {
+    color: #c0392b;
+    margin-top: 0;
+}
+
+.modal-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin-top: 15px;
+}
+
+.close-button {
+    color: #aaa;
+    position: absolute; 
+    top: 10px;
+    right: 20px;
+    font-size: 35px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s ease;
