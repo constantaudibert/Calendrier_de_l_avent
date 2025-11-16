@@ -17,7 +17,7 @@ body {
     margin: 0;
     padding: 0;
     text-align: center;
-    /* Centrage du contenu */
+    /* Centrage du contenu principal */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -26,7 +26,7 @@ body {
     overflow-x: hidden;
 }
 
-/* Page d'attente */
+/* Page d'attente - Le conteneur de la carte */
 #page-attente {
     /* Fond blanc légèrement transparent pour le contraste */
     background: rgba(255, 255, 255, 0.95); 
@@ -37,21 +37,27 @@ body {
     max-width: 700px;
     margin: 20px;
     animation: fadeInScale 1s ease-out forwards;
+    
+    /* Correction : Utilise Flexbox pour organiser les éléments verticalement (Sapin, H1, P) */
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    justify-content: center; 
 }
 
 #page-attente h1 {
     /* Écriture Dorée */
     color: #DAA520; 
     margin-bottom: 15px;
+    margin-top: 15px; /* Sépare du sapin/texte précédent */
     font-size: 2.5em;
-    /* Ombre de texte subtile pour le faire ressortir */
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1); 
 }
 
 #page-attente p {
     font-size: 1.1em;
     line-height: 1.6;
-    margin-bottom: 20px;
+    margin-bottom: 15px; /* Marge ajustée pour la cohésion du texte */
 }
 
 #page-attente strong {
@@ -60,14 +66,15 @@ body {
 }
 
 /* -------------------------------------------------------------------
-   LE SAPIN EN CONSTRUCTION (CORRIGÉ POUR L'AFFICHAGE)
+   LE SAPIN EN CONSTRUCTION (CORRECTION DE POSITIONNEMENT)
    ------------------------------------------------------------------- */
 
 .sapin-construction {
     /* Conteneur : ESSENTIEL pour positionner le tronc et le feuillage */
     width: 180px; 
     height: 200px;
-    margin: 30px auto;
+    /* Marge du bas réduite pour le rapprocher du titre/texte suivant */
+    margin: 30px auto 10px auto; 
     position: relative; 
     transform-origin: bottom center; 
     animation: sapinPulse 2s ease-in-out infinite alternate;
@@ -96,7 +103,6 @@ body {
     transform: translateX(-50%);
     width: 0;
     height: 0;
-    /* La propriété border crée le triangle */
     border-left: 90px solid transparent; 
     border-right: 90px solid transparent;
     border-bottom: 160px solid #28a745; /* Vert sapin */
@@ -109,11 +115,10 @@ body {
 /* Étoile (Le .star) */
 .sapin-construction .star {
     position: absolute;
-    top: -15px; 
+    top: -15px; /* Positionnement au-dessus de la cime */
     left: 50%;
     transform: translateX(-50%);
-    /* Étoile bien Dorée */
-    color: #DAA520; 
+    color: #DAA520; /* Bien Dorée */
     font-size: 3em; 
     z-index: 3;
     animation: clignoter 1.5s infinite alternate;
@@ -263,3 +268,61 @@ body {
     font-weight: bold;
     cursor: pointer;
     transition: color 0.3s ease;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: #e74c3c; 
+}
+
+
+/* -------------------------------------------------------------------
+   MEDIA QUERIES POUR LA RESPONSIVITÉ
+   ------------------------------------------------------------------- */
+
+/* Pour les petits écrans (smartphones) */
+@media (max-width: 768px) {
+    #page-attente {
+        padding: 25px 20px;
+    }
+
+    #page-attente h1 {
+        font-size: 2em;
+    }
+
+    /* Ajustement du sapin sur mobile */
+    .sapin-construction {
+        width: 150px;
+        height: 180px;
+        margin-top: 20px;
+        margin-bottom: 5px; /* Rapproche encore plus le sapin du texte sur mobile */
+    }
+
+    .sapin-construction::after {
+        border-left: 75px solid transparent;
+        border-right: 75px solid transparent;
+        border-bottom: 130px solid #28a745;
+    }
+
+    .sapin-construction .star {
+        font-size: 2.5em;
+        top: -10px;
+    }
+
+    #calendrier {
+        grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); 
+        gap: 10px;
+        padding: 10px;
+    }
+
+    .case {
+        height: 100px;
+        font-size: 2em;
+    }
+
+    .modal-content {
+        width: 95%;
+        padding: 20px;
+        margin: 10% auto;
+    }
+}
