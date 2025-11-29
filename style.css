@@ -548,20 +548,31 @@ body {
     }
 
     #calendrier {
-        grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
-        gap: 10px;
-        padding: 10px;
+        /* On garde la grille de 12 colonnes même sur mobile pour préserver le sapin */
+        /* grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));  <-- A SUPPRIMER */
+        gap: 4px;
+        /* Espace réduit entre les cases */
+        padding: 10px 2px;
     }
 
     .case {
-        height: 100px;
-        font-size: 2em;
+        /* height: 100px; <-- A SUPPRIMER, laisser aspect-ratio gérer */
+        font-size: 1em;
+        /* Police plus petite */
+        border-width: 1px;
+        /* Bordure plus fine */
     }
 
     .modal-content {
         width: 95%;
         padding: 20px;
         margin: 10% auto;
+    }
+
+    /* Ajustement du fond sapin pour qu'il ne soit pas trop large sur mobile */
+    .tree-shape {
+        transform: scaleX(1.15) translateY(4px);
+        transform-origin: center bottom;
     }
 }
 
