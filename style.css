@@ -5,15 +5,15 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Satisfy&display=swap');
 
 /* -------------------------------------------------------------------
-   STYLES GÉNÉRAUX ET PAGE D'ATTENTE (FOND BLANC NEIGE)
+   STYLES GÉNÉRAUX ET PAGE D'ATTENTE (FOND NUIT ETOILEE)
    ------------------------------------------------------------------- */
 
 body {
     font-family: 'Montserrat', sans-serif;
     /* Fond blanc cassé/neige */
-    background-color: #f7f7f7; 
+    background-color: #f7f7f7;
     /* Texte gris foncé pour la lisibilité sur fond clair */
-    color: #444444; 
+    color: #444444;
     margin: 0;
     padding: 0;
     text-align: center;
@@ -28,41 +28,41 @@ body {
 
 /* Page d'attente - Le conteneur de la carte */
 #page-attente {
-    /* Fond blanc légèrement transparent pour le contraste */
-    background: rgba(255, 255, 255, 0.95); 
+    /* Fond bleu légèrement transparent */
+    background: rgba(254, 254, 254, 0.9);
+    border: 2px solid #f1c40f;
+    /* Bordure dorée */
     border-radius: 20px;
-    /* Ombre subtile */
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); 
+    /* Ombre lumineuse */
+    box-shadow: 0 0 30px rgba(241, 196, 15, 0.2);
     padding: 40px 30px;
     max-width: 700px;
     margin: 20px;
     animation: fadeInScale 1s ease-out forwards;
-    
-    /* Correction : Utilise Flexbox pour organiser les éléments verticalement (Sapin, H1, P) */
-    display: flex; 
-    flex-direction: column; 
-    align-items: center; 
-    justify-content: center; 
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 #page-attente h1 {
     /* Écriture Dorée */
-    color: #DAA520; 
+    color: #f1c40f;
     margin-bottom: 15px;
-    margin-top: 15px; /* Sépare du sapin/texte précédent */
+    margin-top: 15px;
     font-size: 2.5em;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1); 
+    text-shadow: 0 0 10px rgba(241, 196, 15, 0.5);
 }
 
 #page-attente p {
     font-size: 1.1em;
     line-height: 1.6;
-    margin-bottom: 15px; /* Marge ajustée pour la cohésion du texte */
+    margin-bottom: 15px;
 }
 
 #page-attente strong {
-    /* Mots importants en Doré */
-    color: #DAA520;
+    color: #f1c40f;
 }
 
 /* -------------------------------------------------------------------
@@ -71,12 +71,12 @@ body {
 
 .sapin-construction {
     /* Conteneur : ESSENTIEL pour positionner le tronc et le feuillage */
-    width: 180px; 
+    width: 180px;
     height: 200px;
     /* Marge du bas réduite pour le rapprocher du titre/texte suivant */
-    margin: 30px auto 10px auto; 
-    position: relative; 
-    transform-origin: bottom center; 
+    margin: 30px auto 10px auto;
+    position: relative;
+    transform-origin: bottom center;
     animation: sapinPulse 2s ease-in-out infinite alternate;
 }
 
@@ -89,7 +89,8 @@ body {
     transform: translateX(-50%);
     width: 25px;
     height: 45px;
-    background-color: #8B4513; /* Marron foncé */
+    background-color: #8B4513;
+    /* Marron foncé */
     border-radius: 5px;
     z-index: 1;
 }
@@ -98,115 +99,344 @@ body {
 .sapin-construction::after {
     content: '';
     position: absolute;
-    bottom: 40px; 
+    bottom: 40px;
     left: 50%;
     transform: translateX(-50%);
     width: 0;
     height: 0;
-    border-left: 90px solid transparent; 
+    border-left: 90px solid transparent;
     border-right: 90px solid transparent;
-    border-bottom: 160px solid #28a745; /* Vert sapin */
+    border-bottom: 160px solid #28a745;
+    /* Vert sapin */
     border-radius: 5px;
     z-index: 2;
-    filter: drop-shadow(0 5px 8px rgba(0,0,0,0.3)); 
+    filter: drop-shadow(0 5px 8px rgba(0, 0, 0, 0.3));
     animation: constructionEffect 3s ease-in-out infinite alternate;
 }
 
 /* Étoile (Le .star) */
 .sapin-construction .star {
     position: absolute;
-    top: -15px; /* Positionnement au-dessus de la cime */
+    top: -15px;
+    /* Positionnement au-dessus de la cime */
     left: 50%;
     transform: translateX(-50%);
-    color: #DAA520; /* Bien Dorée */
-    font-size: 3em; 
+    color: #DAA520;
+    /* Bien Dorée */
+    font-size: 3em;
     z-index: 3;
     animation: clignoter 1.5s infinite alternate;
 }
 
 /* Keyframes des animations */
 @keyframes fadeInScale {
-    from { opacity: 0; transform: scale(0.9); }
-    to { opacity: 1; transform: scale(1); }
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
 
 @keyframes clignoter {
-    0% { opacity: 0.4; transform: scale(0.9) translateX(-50%); }
-    100% { opacity: 1; transform: scale(1) translateX(-50%); }
+    0% {
+        opacity: 0.4;
+        transform: scale(0.9) translateX(-50%);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1) translateX(-50%);
+    }
 }
 
 @keyframes constructionEffect {
-    0% { transform: translateX(-50%) translateY(0) scaleY(0.8); opacity: 0.9; }
-    100% { transform: translateX(-50%) translateY(-10px) scaleY(1); opacity: 1; }
+    0% {
+        transform: translateX(-50%) translateY(0) scaleY(0.8);
+        opacity: 0.9;
+    }
+
+    100% {
+        transform: translateX(-50%) translateY(-10px) scaleY(1);
+        opacity: 1;
+    }
 }
 
 @keyframes sapinPulse {
-    0% { transform: scale(1); }
-    100% { transform: scale(1.03); }
+    0% {
+        transform: scale(1);
+    }
+
+    100% {
+        transform: scale(1.03);
+    }
 }
 
 
 /* -------------------------------------------------------------------
-   STYLES DU CALENDRIER LUI-MÊME
+   STYLES DU CALENDRIER - NUIT ETOILEE (BLUE/GOLD)
    ------------------------------------------------------------------- */
 
 #calendrier {
-    /* Grille responsive */
+    /* Grille de 12 colonnes pour positionner le sapin */
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); 
-    gap: 15px;
-    padding: 20px;
-    max-width: 1200px;
-    margin: 50px auto;
+    grid-template-columns: repeat(12, 1fr);
+    /* Lignes automatiques */
+    grid-auto-rows: auto;
+    gap: 10px;
+
+    /* Fond transparent pour laisser voir le ciel bleu */
+    background-color: transparent;
+    background-image: none;
+
+    padding: 40px 20px;
+    width: 100%;
+    /* max-width: 800px;  <-- Géré par le conteneur parent maintenant */
+    margin-top: 50px;
+    /* <-- Marges gérées par le conteneur parent */
+    box-sizing: border-box;
+
+    /* Pas de bordure massive, juste la forme du sapin par les cases */
+    border: none;
+    box-shadow: none;
+    position: relative;
+    z-index: 1;
+    /* Au-dessus du fond SVG */
+}
+
+/* -------------------------------------------------------------------
+   FOND SAPIN (SVG)
+   ------------------------------------------------------------------- */
+.tree-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    /* Derrière les cases */
+    pointer-events: none;
+    /* Ne pas gêner le clic */
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.tree-background svg {
+    width: 100%;
+    height: 100%;
+    filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.4));
+}
+
+.tree-shape {
+    fill: rgba(255, 255, 255, 0.5);
+    /* Fond blanc semi-transparent */
+    stroke: #d4af37;
+    /* Contour Doré */
+    stroke-width: 2;
+    vector-effect: non-scaling-stroke;
+    /* Garder l'épaisseur du trait constante */
+}
+
+/* Décoration : L'étoile au sommet du calendrier (Gérée par JS maintenant) */
+#star-final {
+    position: absolute;
+    top: -60px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 5em;
+    filter: drop-shadow(0 0 20px #f1c40f);
+    z-index: 10;
+    animation: clignoter 2s infinite;
+    cursor: pointer;
 }
 
 .case {
-    /* Style de base des cases */
-    background-color: #c0392b; /* Rouge de Noël */
-    border: 3px solid #DAA520; /* Contour Doré Vif */
-    border-radius: 8px;
-    height: 120px;
+    /* Style "Boite Cadeau Dorée et Blanche" */
+    background-color: #ffffff;
+    /* Fond Blanc */
+    border: 2px solid #d4af37;
+    /* Bordure Dorée (Or métallique) */
+    border-radius: 0;
+    /* Carrées */
+
+    aspect-ratio: 1 / 1;
+    /* Assure que la case reste carrée */
+    /* height: 80px;  <-- Supprimé pour laisser aspect-ratio gérer la hauteur */
+
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: 'Satisfy', cursive; 
-    font-size: 2.8em;
+
+    font-family: 'Satisfy', cursive;
+    font-size: 2em;
     font-weight: bold;
-    color: white; 
-    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);
-    transition: all 0.3s ease-in-out;
-    cursor: default;
-    position: relative; 
-}
+    color: #d4af37;
+    /* Texte Or */
+    text-shadow: none;
 
-/* Style pour les cases déverrouillées (clicables) */
-.case.unlocked {
-    background-color: #27ae60; /* Vert */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
     cursor: pointer;
-    box-shadow: 0 0 15px rgba(218, 165, 32, 0.5); /* Lueur Dorée */
+    position: relative;
+    z-index: 1;
 }
 
-.case.unlocked:hover {
-    transform: scale(1.08) rotate(2deg);
-    background-color: #2ecc71; 
-}
-
-/* Style pour les cases verrouillées (non accessibles) */
-.case.locked {
-    background-color: #7f8c8d; /* Gris foncé */
-    border-color: #bdc3c7; /* Gris clair */
-    cursor: not-allowed;
-    filter: grayscale(30%); 
-}
-
-/* Cadenas sur les cases verrouillées */
-.case.locked::after {
-    content: '🔒'; 
+/* Petit point décoratif (poignée) */
+.case::after {
+    content: '';
     position: absolute;
-    bottom: 5px;
-    right: 5px;
-    font-size: 1.2em;
-    opacity: 0.8;
+    bottom: 15%;
+    /* Ajusté pour être proportionnel */
+    width: 8px;
+    height: 8px;
+    background: #d4af37;
+    border-radius: 50%;
+    box-shadow: 0 0 2px #d4af37;
+}
+
+/* POSITIONNEMENT EN FORME DE SAPIN (1-2-3-4-5-6-3) */
+/* Chaque case prend 2 colonnes de large */
+.case {
+    grid-column-end: span 2;
+}
+
+/* Rangée 1 (1 case) */
+.case:nth-child(1) {
+    grid-column-start: 6;
+}
+
+/* Rangée 2 (2 cases) */
+.case:nth-child(2) {
+    grid-column-start: 5;
+}
+
+.case:nth-child(3) {
+    grid-column-start: 7;
+}
+
+/* Rangée 3 (3 cases) */
+.case:nth-child(4) {
+    grid-column-start: 4;
+}
+
+.case:nth-child(5) {
+    grid-column-start: 6;
+}
+
+.case:nth-child(6) {
+    grid-column-start: 8;
+}
+
+/* Rangée 4 (4 cases) */
+.case:nth-child(7) {
+    grid-column-start: 3;
+}
+
+.case:nth-child(8) {
+    grid-column-start: 5;
+}
+
+.case:nth-child(9) {
+    grid-column-start: 7;
+}
+
+.case:nth-child(10) {
+    grid-column-start: 9;
+}
+
+/* Rangée 5 (5 cases) */
+.case:nth-child(11) {
+    grid-column-start: 2;
+}
+
+.case:nth-child(12) {
+    grid-column-start: 4;
+}
+
+.case:nth-child(13) {
+    grid-column-start: 6;
+}
+
+.case:nth-child(14) {
+    grid-column-start: 8;
+}
+
+.case:nth-child(15) {
+    grid-column-start: 10;
+}
+
+/* Rangée 6 (6 cases) */
+.case:nth-child(16) {
+    grid-column-start: 1;
+}
+
+.case:nth-child(17) {
+    grid-column-start: 3;
+}
+
+.case:nth-child(18) {
+    grid-column-start: 5;
+}
+
+.case:nth-child(19) {
+    grid-column-start: 7;
+}
+
+.case:nth-child(20) {
+    grid-column-start: 9;
+}
+
+.case:nth-child(21) {
+    grid-column-start: 11;
+}
+
+/* Rangée 7 (Tronc - 3 cases) */
+.case:nth-child(22) {
+    grid-column-start: 4;
+    margin-top: 10px;
+}
+
+.case:nth-child(23) {
+    grid-column-start: 6;
+    margin-top: 10px;
+}
+
+.case:nth-child(24) {
+    grid-column-start: 8;
+    margin-top: 10px;
+}
+
+
+/* États interactifs */
+.case.unlocked:hover {
+    transform: scale(1.05) translateY(-2px);
+    background: #d4af37;
+    /* Fond Or au survol */
+    color: #ffffff;
+    /* Texte Blanc */
+    box-shadow: 0 0 20px rgba(212, 175, 55, 0.6);
+}
+
+.case.unlocked:hover::after {
+    background: #ffffff;
+    /* Point devient blanc */
+    box-shadow: 0 0 2px #ffffff;
+}
+
+.case.locked {
+    filter: grayscale(1) opacity(0.5);
+    cursor: not-allowed;
+    border-color: #bdc3c7;
+    color: #bdc3c7;
+    background-color: #f0f0f0;
+}
+
+.case.locked::after {
+    background: #bdc3c7;
+    box-shadow: none;
 }
 
 /* -------------------------------------------------------------------
@@ -214,37 +444,44 @@ body {
    ------------------------------------------------------------------- */
 
 .modal {
-    display: none; 
-    position: fixed; 
-    z-index: 1000; 
+    display: none;
+    position: fixed;
+    z-index: 1000;
     left: 0;
     top: 0;
-    width: 100%; 
-    height: 100%; 
-    overflow: auto; 
-    background-color: rgba(0,0,0,0.85); 
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.85);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .modal-content {
     background-color: #fefefe;
-    margin: auto; 
+    margin: auto;
     padding: 30px;
     border: 1px solid #888;
-    width: 90%; 
+    width: 90%;
     max-width: 700px;
     border-radius: 15px;
-    color: #0d1b2a; 
+    color: #0d1b2a;
     position: relative;
     box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7);
     animation: slideInFromTop 0.6s ease-out forwards;
 }
 
 @keyframes slideInFromTop {
-    from { transform: translateY(-100px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
+    from {
+        transform: translateY(-100px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
 }
 
 .modal-content h2 {
@@ -261,7 +498,7 @@ body {
 
 .close-button {
     color: #aaa;
-    position: absolute; 
+    position: absolute;
     top: 10px;
     right: 20px;
     font-size: 35px;
@@ -272,7 +509,7 @@ body {
 
 .close-button:hover,
 .close-button:focus {
-    color: #e74c3c; 
+    color: #e74c3c;
 }
 
 
@@ -295,7 +532,8 @@ body {
         width: 150px;
         height: 180px;
         margin-top: 20px;
-        margin-bottom: 5px; /* Rapproche encore plus le sapin du texte sur mobile */
+        margin-bottom: 5px;
+        /* Rapproche encore plus le sapin du texte sur mobile */
     }
 
     .sapin-construction::after {
@@ -310,7 +548,7 @@ body {
     }
 
     #calendrier {
-        grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); 
+        grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
         gap: 10px;
         padding: 10px;
     }
@@ -325,4 +563,57 @@ body {
         padding: 20px;
         margin: 10% auto;
     }
+}
+
+/* Styles pour le jeu de mots */
+/* ... (autres styles inchangés) ... */
+
+#mixed-letters {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px;
+    /* Ajout d'un padding pour mieux gérer le drop */
+    min-height: 60px;
+    /* Hauteur minimale pour la zone de drop */
+    border: 1px dashed #DAA520;
+    /* Cadre doré pour la zone de jeu */
+    border-radius: 10px;
+    background-color: #fff7e6;
+}
+
+.tile {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background-color: #f1c40f;
+    /* Fond doré */
+    color: #0b1d2a;
+    /* Texte bleu nuit */
+    font-weight: bold;
+    font-size: 1.2em;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    user-select: none;
+    /* Empêcher la sélection du texte */
+    cursor: grab;
+    /* Curseur qui indique qu'on peut saisir */
+}
+
+/* Effets visuels pendant le Drag-and-Drop */
+.tile:active {
+    cursor: grabbing;
+}
+
+.tile.dragging {
+    opacity: 0.5;
+    transform: scale(0.9);
+}
+
+.tile.drag-over {
+    /* Mettre une bordure ou une ombre pour indiquer la zone de dépôt */
+    box-shadow: 0 0 10px #DAA520;
 }

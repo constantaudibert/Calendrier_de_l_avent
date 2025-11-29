@@ -1,0 +1,23 @@
+<h2>Trouve le mot</h2>
+<p>Réarrangez ces tuiles pour trouver le mot</p>
+
+<div id="scrabble-game">
+
+    <div id="mixed-letters" class="letter-tiles drop-zone">
+    </div>
+
+    <button onclick="checkWord()">Vérifier</button>
+
+    <p id="feedback-message" class="message"></p>
+</div>
+
+<div id="daily-surprise" style="display:none;">
+    <h3>Félicitations ! 🎉</h3>
+    <img src="images/amour.jpg" alt="Photo de Noël" style="max-width: 100%; height: auto; border-radius: 5px;">
+    <p>Voici ta surprise du jour :</p>
+</div>
+
+<script>
+    // Le script spécifique pour ce jour sera ici
+    initGame('AMOUR', 'MARUO'); // Mot Correct, Lettres Mélangées
+</script>
