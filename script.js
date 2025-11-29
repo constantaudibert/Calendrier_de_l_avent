@@ -6,8 +6,8 @@ function initializeCalendar() {
     const currentDay = today.getDate();
 
     // SIMULATION POUR TEST (Honor 90 Lite - 12 Décembre)
-    //const currentMonth = 12;
-    //const currentDay = 24;
+    // const currentMonth = 12;
+    // const currentDay = 24;
 
     const pageAttente = document.getElementById('page-attente');
     const calendrier = document.getElementById('calendrier');
