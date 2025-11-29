@@ -5,9 +5,9 @@ function initializeCalendar() {
     const currentMonth = today.getMonth() + 1;
     const currentDay = today.getDate();
 
-    // SIMULATION POUR TEST (Désactivé)
-    // const currentMonth = 12;
-    // const currentDay = 24;
+    // SIMULATION POUR TEST (Honor 90 Lite - 12 Décembre)
+    //const currentMonth = 12;
+    //const currentDay = 24;
 
     const pageAttente = document.getElementById('page-attente');
     const calendrier = document.getElementById('calendrier');
@@ -27,7 +27,7 @@ function initializeCalendar() {
         let allUnlocked = true; // Pour vérifier si tout est débloqué
 
         for (let i = 1; i <= 24; i++) {
-            const dayDoor = document.getElementById(`door-${i}`);
+            const dayDoor = document.getElementById(`door - ${i} `);
 
             if (dayDoor) {
                 // Vérifier si la case doit être accessible (Jour J ou antérieur)
@@ -72,7 +72,7 @@ function initializeCalendar() {
 // Fonction pour charger et afficher le contenu de la surprise du jour
 function loadContent(day) {
     // Utiliser fetch pour charger le contenu HTML du fichier correspondant
-    fetch(`content/${day}.html`)
+    fetch(`content / ${day}.html`)
         .then(response => {
             if (!response.ok) {
                 // Si le fichier n'existe pas, donner un message par défaut
@@ -105,9 +105,9 @@ function loadContent(day) {
         .catch(error => {
             console.error('Erreur de chargement du contenu:', error);
             document.getElementById('popup-content').innerHTML = `
-                <h2>Jour ${day} : Surprise non prête !</h2>
-                <p>Oups, la surprise pour ce jour n'a pas encore été préparée. Revenez plus tard !</p>
-            `;
+    < h2 > Jour ${day} : Surprise non prête!</h2 >
+        <p>Oups, la surprise pour ce jour n'a pas encore été préparée. Revenez plus tard !</p>
+`;
             document.getElementById('popup').style.display = 'block';
         });
 }
