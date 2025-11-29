@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calendrier de l'Avent</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Satisfy&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Satisfy&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
     <div id="page-attente" style="display: none;">
@@ -17,49 +20,73 @@
         <p>
             Chère Maman, le calendrier n'est pas encore près !
             Encore quelques jours avant de découvrir ton calendrier de l'avent 2025
-            Du <strong>1er décembre</strong> au <strong>24 décembre</strong> tu pourras ouvrir chaque jour une nouvelle case !!!!
+            Du <strong>1er décembre</strong> au <strong>24 décembre</strong> tu pourras ouvrir chaque jour une nouvelle
+            case !!!!
         </p>
         <p>
             **Patience... la magie arrive bientôt !** ✨
         </p>
     </div>
 
-    <div id="calendrier" style="display: none;">
-        <div class="case" id="door-1">1</div>
-        <div class="case" id="door-2">2</div>
-        <div class="case" id="door-3">3</div>
-        <div class="case" id="door-4">4</div>
-        <div class="case" id="door-5">5</div>
-        <div class="case" id="door-6">6</div>
-        <div class="case" id="door-7">7</div>
-        <div class="case" id="door-8">8</div>
-        <div class="case" id="door-9">9</div>
-        <div class="case" id="door-10">10</div>
-        <div class="case" id="door-11">11</div>
-        <div class="case" id="door-12">12</div>
-        <div class="case" id="door-13">13</div>
-        <div class="case" id="door-14">14</div>
-        <div class="case" id="door-15">15</div>
-        <div class="case" id="door-16">16</div>
-        <div class="case" id="door-17">17</div>
-        <div class="case" id="door-18">18</div>
-        <div class="case" id="door-19">19</div>
-        <div class="case" id="door-20">20</div>
-        <div class="case" id="door-21">21</div>
-        <div class="case" id="door-22">22</div>
-        <div class="case" id="door-23">23</div>
-        <div class="case" id="door-24">24</div>
+    <div id="calendrier-container" style="position: relative; max-width: 800px; margin: 30px auto;">
+        <!-- Fond Sapin (SVG) -->
+        <div class="tree-background">
+            <svg viewBox="0 0 100 100" preserveAspectRatio="none" style="overflow: visible;">
+                <!-- 
+                    MODIFIER LES FORMES ICI :
+                    1. Triangle (Feuillage) : Resserré pour encadrer les cases de près
+                -->
+                <polygon points="50,5 105,82 -5,82" class="tree-shape" />
+
+                <!-- 
+                    2. Rectangle (Tronc) : Ajusté pour les 3 cases du bas
+                -->
+                <rect x="27" y="82" width="47" height="12" class="tree-shape" />
+            </svg>
+        </div>
+
+        <!-- L'étoile finale (cachée par défaut) -->
+        <div id="star-final" style="display: none;">⭐</div>
+
+        <div id="calendrier">
+            <div class="case" id="door-24">24</div>
+            <div class="case" id="door-5">5</div>
+            <div class="case" id="door-18">18</div>
+            <div class="case" id="door-12">12</div>
+            <div class="case" id="door-1">1</div>
+            <div class="case" id="door-9">9</div>
+            <div class="case" id="door-20">20</div>
+            <div class="case" id="door-3">3</div>
+            <div class="case" id="door-15">15</div>
+            <div class="case" id="door-7">7</div>
+            <div class="case" id="door-22">22</div>
+            <div class="case" id="door-10">10</div>
+            <div class="case" id="door-6">6</div>
+            <div class="case" id="door-14">14</div>
+            <div class="case" id="door-2">2</div>
+            <div class="case" id="door-8">8</div>
+            <div class="case" id="door-17">17</div>
+            <div class="case" id="door-23">23</div>
+            <div class="case" id="door-4">4</div>
+            <div class="case" id="door-11">11</div>
+            <div class="case" id="door-19">19</div>
+            <div class="case" id="door-13">13</div>
+            <div class="case" id="door-21">21</div>
+            <div class="case" id="door-16">16</div>
+        </div>
     </div>
 
     <div id="popup" class="modal" style="display: none;">
         <div class="modal-content">
             <span class="close-button" onclick="document.getElementById('popup').style.display='none';">&times;</span>
             <div id="popup-content">
-                </div>
+            </div>
         </div>
     </div>
-    
+
+    <script src="scrabble_game.js"></script>
     <script src="script.js"></script>
 
 </body>
+
 </html>
