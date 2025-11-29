@@ -290,8 +290,8 @@ body {
     position: absolute;
     bottom: 15%;
     /* Ajusté pour être proportionnel */
-    width: 8px;
-    height: 8px;
+    width: 4px;
+    height: 4px;
     background: #d4af37;
     border-radius: 50%;
     box-shadow: 0 0 2px #d4af37;
