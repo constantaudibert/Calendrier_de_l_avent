@@ -1,0 +1,32 @@
+<h2>Arriveras tu à lire ?</h2>
+<div style="margin-top: 20px; text-align: center;">
+    <input type="text" id="hopeInput" placeholder="le mot..."
+        style="padding: 10px; border-radius: 5px; border: 1px solid #ccc; font-size: 16px;">
+
+    <div id="congratsMsg" style="display: none; color: #f1c40f; font-weight: bold; margin-top: 10px; font-size: 18px;">
+        Si l'on traduis en français on obtient "Espoir" qui signifie "attente confiante" C'est une promesse de jour
+        meilleurs ou la lumière l'emporte sur l'obscurité.</div>
+</div>
+
+<div class="music-player" id="musicPlayer" style="display: none;">
+    <iframe src="https://open.spotify.com/embed/track/5flcmc5vTnZMtXh4RFsRJO" width="70%" height="352" frameborder="0"
+        allow="encrypted-media" allowfullscreen></iframe>
+</div>
+
+<img src="images/hope.jpg" alt="image2" style="max-width: 70%; height: auto; border-radius: 5px;">
+
+<script>
+    document.getElementById('hopeInput').addEventListener('input', function (e) {
+        // Convertir en minuscules pour ignorer la casse (Hope, HOPE, hope...)
+        const val = e.target.value.toLowerCase().trim();
+
+        // Vérifier si le mot "hope" est présent
+        if (val === 'hope' || val.includes('hope')) {
+            document.getElementById('congratsMsg').style.display = 'block';
+            document.getElementById('musicPlayer').style.display = 'flex';
+        } else {
+            document.getElementById('congratsMsg').style.display = 'none';
+            document.getElementById('musicPlayer').style.display = 'none';
+        }
+    });
+</script>
