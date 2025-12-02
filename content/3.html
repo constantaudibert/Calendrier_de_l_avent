@@ -1,0 +1,134 @@
+<style>
+    .scratch-container {
+        position: relative;
+        width: 300px;
+        height: 300px;
+        margin: 0 auto;
+        user-select: none;
+        -webkit-user-select: none;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .scratch-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 1;
+    }
+
+    #scratch-canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 2;
+        cursor: crosshair;
+    }
+</style>
+<h1> Jour 3 </h1>
+<h2>Banco ! </h2>
+
+<div class="scratch-container">
+    <img src="images/una.jpg" alt="surprise poilue" class="scratch-image">
+    <canvas id="scratch-canvas"></canvas>
+</div>
+
+<script>
+    (function () {
+        const canvas = document.getElementById('scratch-canvas');
+        const container = document.querySelector('.scratch-container');
+        const ctx = canvas.getContext('2d');
+        let isDrawing = false;
+
+        // Ajuster la taille du canvas à celle du conteneur
+        function resizeCanvas() {
+            canvas.width = container.offsetWidth;
+            canvas.height = container.offsetHeight;
+
+            // Charger la texture or
+            const img = new Image();
+            img.src = 'images/gold_glitter.png';
+            img.onload = function () {
+                const pattern = ctx.createPattern(img, 'repeat');
+                ctx.fillStyle = pattern;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                // Ajouter un texte ou motif sur la couche à gratter
+                ctx.font = 'bold 24px Montserrat';
+                ctx.fillStyle = '#333'; // Texte foncé pour contraster avec l'or
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.shadowColor = "white";
+                ctx.shadowBlur = 5;
+                ctx.fillText('GRATTES ICI', canvas.width / 2, canvas.height / 2);
+                ctx.shadowBlur = 0; // Reset shadow
+            };
+        }
+
+        // Initialiser
+        // Petit délai pour s'assurer que le conteneur a ses dimensions (si dans une modale)
+        setTimeout(resizeCanvas, 100);
+
+        function getMousePos(e) {
+            const rect = canvas.getBoundingClientRect();
+            let clientX, clientY;
+
+            if (e.touches && e.touches.length > 0) {
+                clientX = e.touches[0].clientX;
+                clientY = e.touches[0].clientY;
+            } else {
+                clientX = e.clientX;
+                clientY = e.clientY;
+            }
+
+            return {
+                x: clientX - rect.left,
+                y: clientY - rect.top
+            };
+        }
+
+        function scratch(e) {
+            if (!isDrawing) return;
+            e.preventDefault(); // Empêcher le scroll sur mobile
+
+            const pos = getMousePos(e);
+
+            ctx.globalCompositeOperation = 'destination-out';
+            ctx.beginPath();
+            ctx.arc(pos.x, pos.y, 20, 0, Math.PI * 2); // Rayon du "grattage"
+            ctx.fill();
+        }
+
+        // Événements Souris
+        canvas.addEventListener('mousedown', (e) => {
+            isDrawing = true;
+            scratch(e);
+        });
+
+        canvas.addEventListener('mousemove', scratch);
+
+        canvas.addEventListener('mouseup', () => {
+            isDrawing = false;
+        });
+
+        canvas.addEventListener('mouseleave', () => {
+            isDrawing = false;
+        });
+
+        // Événements Touch (Mobile)
+        canvas.addEventListener('touchstart', (e) => {
+            isDrawing = true;
+            scratch(e);
+        }, { passive: false });
+
+        canvas.addEventListener('touchmove', scratch, { passive: false });
+
+        canvas.addEventListener('touchend', () => {
+            isDrawing = false;
+        });
+    })();
+</script>
