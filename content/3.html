@@ -28,6 +28,32 @@
         z-index: 2;
         cursor: crosshair;
     }
+
+    #win-message {
+        display: none;
+        text-align: center;
+        margin-top: 20px;
+        color: #d4af37;
+        font-family: 'Satisfy', cursive;
+        font-size: 1.8em;
+        animation: popIn 0.5s ease;
+    }
+
+    @keyframes popIn {
+        0% {
+            transform: scale(0);
+            opacity: 0;
+        }
+
+        80% {
+            transform: scale(1.1);
+            opacity: 1;
+        }
+
+        100% {
+            transform: scale(1);
+        }
+    }
 </style>
 <h1> Jour 3 </h1>
 <h2>Banco ! </h2>
@@ -37,12 +63,18 @@
     <canvas id="scratch-canvas"></canvas>
 </div>
 
+<div id="win-message">
+    🎉 Tu as gagné un magnifique berger allemand de Noël ! 🎄
+</div>
+
 <script>
     (function () {
         const canvas = document.getElementById('scratch-canvas');
         const container = document.querySelector('.scratch-container');
         const ctx = canvas.getContext('2d');
+        const winMessage = document.getElementById('win-message');
         let isDrawing = false;
+        let won = false;
 
         // Ajuster la taille du canvas à celle du conteneur
         function resizeCanvas() {
@@ -92,7 +124,7 @@
         }
 
         function scratch(e) {
-            if (!isDrawing) return;
+            if (!isDrawing || won) return;
             e.preventDefault(); // Empêcher le scroll sur mobile
 
             const pos = getMousePos(e);
@@ -101,6 +133,33 @@
             ctx.beginPath();
             ctx.arc(pos.x, pos.y, 20, 0, Math.PI * 2); // Rayon du "grattage"
             ctx.fill();
+        }
+
+        function checkWin() {
+            if (won) return;
+
+            // Calculer le pourcentage gratté
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const data = imageData.data;
+            let scratchedPixels = 0;
+
+            // On parcourt les pixels (R, G, B, A) -> on regarde A (alpha) à l'index i+3
+            for (let i = 0; i < data.length; i += 4) {
+                if (data[i + 3] === 0) {
+                    scratchedPixels++;
+                }
+            }
+
+            const totalPixels = canvas.width * canvas.height;
+            const percentage = (scratchedPixels / totalPixels) * 100;
+
+            if (percentage > 50) {
+                won = true;
+                // Tout effacer pour bien voir l'image
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                // Afficher le message
+                winMessage.style.display = 'block';
+            }
         }
 
         // Événements Souris
@@ -113,6 +172,7 @@
 
         canvas.addEventListener('mouseup', () => {
             isDrawing = false;
+            checkWin();
         });
 
         canvas.addEventListener('mouseleave', () => {
@@ -129,6 +189,7 @@
 
         canvas.addEventListener('touchend', () => {
             isDrawing = false;
+            checkWin();
         });
     })();
 </script>
