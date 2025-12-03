@@ -1,0 +1,193 @@
+<style>
+    .ecg-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 250px;
+        background-color: #fff;
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        overflow: hidden;
+        position: relative;
+        margin: 20px 0;
+    }
+
+    .ecg-svg {
+        margin: 20px 0;
+    }
+
+    .ecg-svg {
+        width: 100%;
+        height: 100%;
+        /* Ensure the line stays crisp */
+        overflow: visible;
+    }
+
+    .heart-line {
+        fill: none;
+        stroke: #ff0000;
+        stroke-width: 3;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        /* Create the "drawing" effect */
+        stroke-dasharray: 1000;
+        stroke-dashoffset: 1000;
+        animation: ecgDraw 3s linear infinite;
+    }
+
+    @keyframes ecgDraw {
+        0% {
+            stroke-dashoffset: 1000;
+        }
+
+        100% {
+            stroke-dashoffset: 0;
+        }
+    }
+
+    /* Fade effect to make it look like a monitor refresh */
+    .fade-overlay {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 100px;
+        height: 100%;
+        background: linear-gradient(to right, transparent, #fff);
+        z-index: 2;
+    }
+
+    /* Orientation Logic */
+    #landscape-warning {
+        display: none;
+        text-align: center;
+        padding: 40px 20px;
+        color: #d4af37;
+    }
+
+    .rotate-icon {
+        font-size: 3em;
+        margin-bottom: 20px;
+        display: inline-block;
+        animation: rotatePhone 2s infinite ease-in-out;
+    }
+
+    @keyframes rotatePhone {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        50% {
+            transform: rotate(-90deg);
+        }
+
+        100% {
+            transform: rotate(0deg);
+        }
+    }
+
+    /* Mobile Portrait Detection */
+    @media only screen and (orientation: portrait) {
+        #ecg-content {
+            display: none;
+        }
+
+        #landscape-warning {
+            display: block;
+        }
+    }
+</style>
+
+<div id="landscape-warning">
+    <div class="rotate-icon">📱➡️🔄</div>
+    <h2 style="font-family: 'Satisfy', cursive;">Chut... Secret !</h2>
+    <p>Tourne ton téléphone en mode paysage pour voir mon cœur battre...</p>
+</div>
+
+<div id="ecg-content">
+    <div style="text-align: center;">
+        <h2 style="font-family: 'Satisfy', cursive; color: #d4af37; font-size: 2em; margin-bottom: 10px;">
+            Jour 4 Ever
+        </h2>
+    </div>
+
+    <div class="ecg-container">
+        <svg class="ecg-svg" viewBox="0 0 500 100" preserveAspectRatio="none">
+            <!-- A repeating ECG pattern -->
+            <path class="heart-line"
+                d="M0,50 L50,50 L60,40 L70,50 L80,50 L90,20 L100,80 L110,50 L130,50 L140,40 L150,50 L200,50 L250,50 L260,40 L270,50 L280,50 L290,20 L300,80 L310,50 L330,50 L340,40 L350,50 L400,50 L450,50 L460,40 L470,50 L480,50 L490,20 L500,80" />
+        </svg>
+        <div class="fade-overlay"></div>
+    </div>
+
+    <div style="text-align: center; color: #666; font-style: italic;">
+        Mon cœur bat pour toi à l'infini ❤️
+    </div>
+
+    <!-- Audio Player -->
+    <audio id="heart-audio" loop>
+        <source src="images/heartbeat.mp3" type="audio/mpeg">
+        Ton navigateur ne supporte pas l'élément audio.
+    </audio>
+
+    <div style="text-align: center; margin-top: 15px;">
+        <button id="toggle-sound"
+            style="background: none; border: 2px solid #d4af37; color: #d4af37; padding: 5px 15px; border-radius: 20px; cursor: pointer; font-family: 'Montserrat', sans-serif;">
+            🔊 Activer le son
+        </button>
+    </div>
+
+    <script>
+        (function () {
+            const audio = document.getElementById('heart-audio');
+            const btn = document.getElementById('toggle-sound');
+            let isPlaying = false;
+
+            function togglePlay() {
+                if (isPlaying) {
+                    audio.pause();
+                    btn.textContent = '🔊 Activer le son';
+                    btn.style.background = 'none';
+                    btn.style.color = '#d4af37';
+                } else {
+                    audio.play().then(() => {
+                        btn.textContent = '🔇 Couper le son';
+                        btn.style.background = '#d4af37';
+                        btn.style.color = '#fff';
+                    }).catch(e => console.log("Audio play failed:", e));
+                }
+                isPlaying = !isPlaying;
+            }
+
+            btn.addEventListener('click', togglePlay);
+
+            // Try auto-play (might be blocked by browser policy)
+            audio.volume = 0.5;
+            audio.play().then(() => {
+                isPlaying = true;
+                btn.textContent = '🔇 Couper le son';
+                btn.style.background = '#d4af37';
+                btn.style.color = '#fff';
+            }).catch(e => {
+                console.log("Autoplay blocked, waiting for user interaction");
+            });
+
+            // Stop audio when popup is closed (observed via DOM removal or we can attach to the close button in main script)
+            // Since this script runs inside the modal, we need a way to stop it when the modal closes.
+            // The main script removes the content or hides the modal. If it just hides, audio keeps playing.
+            // We should hook into the close button of the modal if possible, or use a MutationObserver.
+
+            const observer = new MutationObserver((mutations) => {
+                const popup = document.getElementById('popup');
+                if (popup && popup.style.display === 'none') {
+                    audio.pause();
+                    audio.currentTime = 0;
+                }
+            });
+
+            const popup = document.getElementById('popup');
+            if (popup) {
+                observer.observe(popup, { attributes: true, attributeFilter: ['style'] });
+            }
+        })();
+    </script>
+</div>
