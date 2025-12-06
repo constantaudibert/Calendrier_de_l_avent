@@ -213,25 +213,25 @@
     <div class="wonders-grid">
         <!-- Image 1 -->
         <div class="wonder-card">
-            <img src="../images/Chichen-Itza-Mexique.jpg" alt="Chichen Itza" class="wonder-img"
+            <img src="images/Chichen-Itza-Mexique.jpg" alt="Chichen Itza" class="wonder-img"
                 onerror="this.style.display='none'; this.parentElement.innerText='Image manquante : Chichen-Itza-Mexique.jpg'">
         </div>
 
         <!-- Image 2 -->
         <div class="wonder-card">
-            <img src="../images/Colisee-Rome.jpg" alt="Colisée" class="wonder-img"
+            <img src="images/Colisee-Rome.jpg" alt="Colisée" class="wonder-img"
                 onerror="this.style.display='none'; this.parentElement.innerText='Image manquante : Colisee-Rome.jpg'">
         </div>
 
         <!-- Image 3 -->
         <div class="wonder-card">
-            <img src="../images/Egypte.jpg" alt="Pyramides d'Égypte" class="wonder-img"
+            <img src="images/Egypte.jpg" alt="Pyramides d'Égypte" class="wonder-img"
                 onerror="this.style.display='none'; this.parentElement.innerText='Image manquante : Egypte.jpg'">
         </div>
 
         <!-- Image 4 (Celle avec le bijou caché !) -->
         <div class="wonder-card" style="position: relative;">
-            <img src="../images/Taj-Mahal.jpg" alt="Taj Mahal" class="wonder-img"
+            <img src="images/Taj-Mahal.jpg" alt="Taj Mahal" class="wonder-img"
                 onerror="this.style.display='none'; this.parentElement.innerText='Image manquante : Taj-Mahal.jpg'">
             <!-- 
                 POUR CHANGER LA POSITION DE LA COURONNE :
@@ -245,19 +245,19 @@
 
         <!-- Image 5 -->
         <div class="wonder-card">
-            <img src="../images/Petra-Jordanie.jpg" alt="Pétra" class="wonder-img"
+            <img src="images/Petra-Jordanie.jpg" alt="Pétra" class="wonder-img"
                 onerror="this.style.display='none'; this.parentElement.innerText='Image manquante : Petra-Jordanie.jpg'">
         </div>
 
         <!-- Image 6 -->
         <div class="wonder-card">
-            <img src="../images/Rio-Christ.jpg" alt="Christ Rédempteur" class="wonder-img"
+            <img src="images/Rio-Christ.jpg" alt="Christ Rédempteur" class="wonder-img"
                 onerror="this.style.display='none'; this.parentElement.innerText='Image manquante : Rio-Christ.jpg'">
         </div>
 
         <!-- Image 7 -->
         <div class="wonder-card">
-            <img src="../images/Muraille-Chine.jpg" alt="Grande Muraille de Chine" class="wonder-img"
+            <img src="images/Muraille-Chine.jpg" alt="Grande Muraille de Chine" class="wonder-img"
                 onerror="this.style.display='none'; this.parentElement.innerText='Image manquante : Muraille-Chine.jpg'">
         </div>
     </div>
@@ -267,8 +267,8 @@
     <!-- Écran de victoire -->
     <div id="win-modal">
         <div class="win-content">
-            <img src="../images/miss_meilleure_maman_logo.png" alt="Logo Miss Meilleure Maman" class="win-logo">
-            <img src="../images/couronne_7_diamants.png" alt="Couronne Royale" class="win-crown">
+            <img src="images/miss_meilleure_maman_logo.png" alt="Logo Miss Meilleure Maman" class="win-logo">
+            <img src="images/couronne_7_diamants.png" alt="Couronne Royale" class="win-crown">
             <p style="font-size: 1.2em; color: #555;">Même les 7 merveilles du monde réunis ne t'arrivent pas à la
                 hauteur</p>
             <button class="close-btn" onclick="closeModal()">Fermer</button>
@@ -279,7 +279,7 @@
         const jewel = document.getElementById('hidden-jewel');
         const modal = document.getElementById('win-modal');
         // On prépare la musique. Assurez-vous que le fichier s'appelle bien 'victoire.mp3' dans le dossier images
-        const victoryAudio = new Audio('../images/victoire.mp3');
+        const victoryAudio = new Audio('images/victoire.mp3');
         victoryAudio.loop = true; // On boucle la musique si elle est courte
 
         jewel.addEventListener('click', (e) => {
