@@ -1,0 +1,311 @@
+<style>
+    /* Scène principale */
+    #day8-scene {
+        position: relative;
+        width: 100%;
+        height: 60vh;
+        max-height: 500px;
+        min-height: 400px;
+        background: transparent;
+        font-family: 'Segoe UI', sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        touch-action: none;
+        color: #d4af37;
+    }
+
+    .d8-header {
+        position: absolute;
+        top: 10px;
+        width: 100%;
+        text-align: center;
+        z-index: 10;
+        pointer-events: none;
+        transition: opacity 1s ease;
+    }
+
+    .d8-header h1 {
+        font-family: 'Satisfy', cursive;
+        margin: 0;
+        font-size: 1.8rem;
+        color: #d4af37;
+    }
+
+    .d8-hint {
+        color: #aaa;
+        font-size: 0.9rem;
+    }
+
+    /* Le conteneur du 8 */
+    .d8-container {
+        position: relative;
+        width: 45vh;
+        max-width: 220px;
+        aspect-ratio: 1/1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 5;
+        margin-bottom: 40px;
+
+        /* Transition très fluide pour la rotation */
+        transition: transform 2.5s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+
+    .d8-container svg {
+        width: 100%;
+        height: 100%;
+        overflow: visible;
+    }
+
+    .path-bg {
+        stroke: #f0f0f0;
+        stroke-width: 15;
+        stroke-linecap: round;
+        fill: none;
+        transition: opacity 1s;
+    }
+
+    .path-draw {
+        stroke: url(#goldGradient);
+        stroke-width: 15;
+        stroke-linecap: round;
+        fill: none;
+        stroke-dasharray: 1000;
+        stroke-dashoffset: 1000;
+        transition: stroke-dashoffset 0.1s linear;
+        filter: drop-shadow(0 0 3px rgba(212, 175, 55, 0.4));
+    }
+
+    .path-shine {
+        stroke: #fff;
+        stroke-width: 6;
+        stroke-linecap: round;
+        fill: none;
+        opacity: 0;
+        stroke-dasharray: 150 850;
+        stroke-dashoffset: 0;
+        filter: drop-shadow(0 0 2px #fff);
+        pointer-events: none;
+        transition: opacity 1s;
+    }
+
+    /* Footer */
+    .d8-footer {
+        position: absolute;
+        bottom: 10px;
+        width: 100%;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transform: translateY(20px);
+        transition: all 1.5s ease 0.5s;
+        pointer-events: none;
+        z-index: 20;
+    }
+
+    .d8-footer.visible {
+        opacity: 1;
+        transform: translateY(0);
+        pointer-events: auto;
+    }
+
+    .d8-footer p {
+        font-family: 'Satisfy', cursive;
+        font-size: 1.2rem;
+        margin: 2px 0;
+        color: #d4af37;
+    }
+
+    .d8-btn {
+        background: #d4af37;
+        color: #fff;
+        padding: 6px 20px;
+        border-radius: 20px;
+        text-decoration: none;
+        font-weight: bold;
+        font-size: 0.9rem;
+        margin-top: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        display: inline-block;
+    }
+
+    /* Animations fluides */
+
+    /* 1. État tourné (Transition CSS) */
+    .has-rotated {
+        transform: rotate(90deg);
+    }
+
+    /* 2. État flottant (Animation CSS qui prend le relais) */
+    .is-floating {
+        animation: d8-float 6s ease-in-out infinite alternate;
+    }
+
+    @keyframes d8-float {
+        0% {
+            transform: rotate(90deg) scale(1) translateY(0);
+        }
+
+        100% {
+            transform: rotate(90deg) scale(1.05) translateY(-5px);
+        }
+    }
+
+    /* Animation brillance */
+    .shimmering .path-draw {
+        stroke-dasharray: none;
+        stroke-dashoffset: 0;
+        filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.6));
+        transition: filter 2s ease;
+    }
+
+    .shimmering .path-shine {
+        opacity: 0.6;
+        animation: d8-flow 4s linear infinite;
+    }
+
+    @keyframes d8-flow {
+        to {
+            stroke-dashoffset: -1000;
+        }
+    }
+
+    .hidden {
+        opacity: 0 !important;
+    }
+</style>
+
+<div id="day8-scene">
+    <div class="d8-header" id="d8-header">
+        <h1>Jour 8</h1>
+        <div class="d8-hint">Trouve comment activer la magie du 8...</div>
+    </div>
+
+    <div class="d8-container" id="d8-container">
+        <svg viewBox="0 0 300 300" id="d8-svg">
+            <defs>
+                <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#bf953f" />
+                    <stop offset="25%" stop-color="#fcf6ba" />
+                    <stop offset="50%" stop-color="#b38728" />
+                    <stop offset="75%" stop-color="#fbf5b7" />
+                    <stop offset="100%" stop-color="#aa771c" />
+                </linearGradient>
+            </defs>
+            <path id="d8-bg" class="path-bg"
+                d="M150,150 C90,150 70,100 70,75 C70,35 105,10 150,10 C195,10 230,35 230,75 C230,100 210,150 150,150 C90,150 70,200 70,225 C70,265 105,290 150,290 C195,290 230,265 230,225 C230,200 210,150 150,150 Z" />
+            <path id="d8-draw" class="path-draw"
+                d="M150,150 C90,150 70,100 70,75 C70,35 105,10 150,10 C195,10 230,35 230,75 C230,100 210,150 150,150 C90,150 70,200 70,225 C70,265 105,290 150,290 C195,290 230,265 230,225 C230,200 210,150 150,150 Z" />
+            <path id="d8-shine" class="path-shine"
+                d="M150,150 C90,150 70,100 70,75 C70,35 105,10 150,10 C195,10 230,35 230,75 C230,100 210,150 150,150 C90,150 70,200 70,225 C70,265 105,290 150,290 C195,290 230,265 230,225 C230,200 210,150 150,150 Z" />
+        </svg>
+    </div>
+
+    <div class="d8-footer" id="d8-footer">
+        <p>Je t'aime à l'infini...</p>
+        <p>Dans mon cœur, à l'infini...</p>
+        <p>La meilleure des mamans à l'infini...</p>
+        <a href="index.html" class="d8-btn" target="_top">Retour</a>
+    </div>
+</div>
+
+<script>
+    (function () {
+        const container = document.getElementById('d8-container');
+        const drawPath = document.getElementById('d8-draw');
+        const bgPath = document.getElementById('d8-bg');
+        const header = document.getElementById('d8-header');
+        const footer = document.getElementById('d8-footer');
+        const svg = document.getElementById('d8-svg');
+        const scene = document.getElementById('day8-scene');
+
+        if (!container) return;
+
+        const len = bgPath.getTotalLength();
+        drawPath.style.strokeDasharray = len;
+        drawPath.style.strokeDashoffset = len;
+
+        const POINTS_COUNT = 50;
+        const points = [];
+        for (let i = 0; i <= POINTS_COUNT; i++) {
+            const p = bgPath.getPointAtLength((i / POINTS_COUNT) * len);
+            points.push({ x: p.x, y: p.y });
+        }
+
+        let currentIndex = 0;
+        let isDone = false;
+        const TOLERANCE = 60;
+
+        function getSVGPos(evt) {
+            const rect = svg.getBoundingClientRect();
+            const clientX = evt.touches ? evt.touches[0].clientX : evt.clientX;
+            const clientY = evt.touches ? evt.touches[0].clientY : evt.clientY;
+
+            if (!clientX) return null;
+            const x = (clientX - rect.left) * (300 / rect.width);
+            const y = (clientY - rect.top) * (300 / rect.height);
+            return { x, y };
+        }
+
+        function onMove(e) {
+            if (isDone) return;
+            if (e.type === 'mousemove' && e.buttons !== 1) return;
+            const pos = getSVGPos(e);
+            if (!pos) return;
+
+            let nextIndex = currentIndex;
+            let found = false;
+            for (let i = 1; i < 10; i++) {
+                let checkIdx = currentIndex + i;
+                if (checkIdx >= points.length) break;
+                const target = points[checkIdx];
+                const dist = Math.hypot(pos.x - target.x, pos.y - target.y);
+                if (dist < TOLERANCE) {
+                    nextIndex = checkIdx;
+                    found = true;
+                }
+            }
+            if (found && nextIndex > currentIndex) {
+                currentIndex = nextIndex;
+                const drawLen = (currentIndex / POINTS_COUNT) * len;
+                drawPath.style.strokeDashoffset = len - drawLen;
+                if (currentIndex >= points.length - 2) win();
+            }
+        }
+
+        function win() {
+            if (isDone) return;
+            isDone = true;
+            drawPath.style.strokeDashoffset = 0;
+            header.style.opacity = 0;
+
+            const audio = new Audio('images/infini.mp3');
+            audio.loop = true;
+            audio.play().catch(() => { });
+            if (navigator.vibrate) navigator.vibrate([50, 50, 50]);
+
+            // Phase 1 : Disparition tracé gris et lancement rotation fluide
+            setTimeout(() => {
+                bgPath.classList.add('hidden');
+                container.classList.add('has-rotated'); // Rotation pure via transition CSS
+                container.classList.add('shimmering'); // Effet lumière
+            }, 300);
+
+            // Phase 2 : Une fois la rotation finie, on active le flottement
+            setTimeout(() => {
+                container.classList.add('is-floating'); // Animation infinite douce
+                footer.classList.add('visible');
+            }, 2800); // 300ms + 2.5s de transition
+        }
+
+        ['mousedown', 'mousemove', 'touchstart', 'touchmove'].forEach(ev => {
+            scene.addEventListener(ev, onMove, { passive: false });
+        });
+    })();
+</script>
