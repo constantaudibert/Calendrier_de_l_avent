@@ -15,6 +15,8 @@
         color: #d4af37;
         user-select: none;
         touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
+        outline: none;
     }
 
     .d9-title {
@@ -219,7 +221,7 @@
 
 <div id="day9-scene">
     <h1 class="d9-title">Jour 9</h1>
-    <div class="d9-instruction" id="d9-instr">Tapote 9 fois pour libérer la magie... (<span id="count">0</span>/9)</div>
+    <div class="d9-instruction" id="d9-instr" style="display: none;"><span id="count">0</span></div>
 
     <div class="d9-egg-container" id="egg">
         <div class="golden-egg">
@@ -237,8 +239,8 @@
     </div>
 
     <div class="d9-surprise-box" id="surprise">
-        <div class="d9-emoji">🐣 ✨</div>
-        <p class="d9-text">La patience révèle<br>les plus beaux trésors !</p>
+        <div class="d9-emoji">🐣</div>
+        <p class="d9-text">Parfois il suffit d'avoir un regard 9 pour appréhender les choses</p>
         <a href="index.html" class="d9-back" target="_top">Merci</a>
     </div>
 </div>
@@ -262,11 +264,16 @@
         crackPath.style.strokeDashoffset = totalLen; // Caché
 
         let isDone = false;
+        const crackAudio = new Audio('images/crack.mp3');
 
         egg.addEventListener('click', function () {
             if (isDone) return;
             taps++;
             countSpan.textContent = taps;
+
+            // Son de craquement
+            crackAudio.currentTime = 0;
+            crackAudio.play().catch(() => { });
 
             // 1. Animation Shake
             egg.classList.remove('shaking');
