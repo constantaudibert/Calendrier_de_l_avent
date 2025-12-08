@@ -1,0 +1,312 @@
+<style>
+    #day9-scene {
+        position: relative;
+        width: 100%;
+        height: 60vh;
+        max-height: 500px;
+        min-height: 400px;
+        background: transparent;
+        font-family: 'Montserrat', sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        color: #d4af37;
+        user-select: none;
+        touch-action: manipulation;
+    }
+
+    .d9-title {
+        position: absolute;
+        top: 10px;
+        font-family: 'Satisfy', cursive;
+        font-size: 2rem;
+        margin: 0;
+        z-index: 10;
+        pointer-events: none;
+        transition: opacity 0.5s;
+    }
+
+    .d9-instruction {
+        position: absolute;
+        top: 50px;
+        font-size: 0.9rem;
+        color: #888;
+        opacity: 0.8;
+        transition: opacity 0.5s;
+        pointer-events: none;
+    }
+
+    /* CONTENEUR OEUF */
+    .d9-egg-container {
+        position: relative;
+        width: 200px;
+        height: 280px;
+        cursor: pointer;
+        z-index: 5;
+        /* Centre le transfrom origin pour les secousses */
+        transform-origin: center bottom;
+    }
+
+    /* FORME DE L'OEUF (CSS PUR + DEGRADES RADIAUX COMPLEXES) */
+    .golden-egg {
+        width: 100%;
+        height: 100%;
+        background:
+            /* Reflet spéculaire net (brillance) */
+            radial-gradient(ellipse at 35% 25%, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0) 20%),
+            /* Reflet secondaire */
+            radial-gradient(ellipse at 65% 15%, rgba(255, 255, 200, 0.4) 0%, rgba(255, 255, 255, 0) 30%),
+            /* Ombre portée interne (donne du volume) */
+            radial-gradient(circle at 50% 120%, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0) 50%),
+            /* Texture Or de base */
+            radial-gradient(circle at 40% 40%, #ffd700 0%, #daa520 40%, #b8860b 80%, #5e4304 100%);
+
+        border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+        box-shadow:
+            /* Ombre portée au sol */
+            0 20px 30px rgba(0, 0, 0, 0.3),
+            /* Lueur dorée externe */
+            0 0 20px rgba(255, 215, 0, 0.2),
+            inset -10px -10px 20px rgba(0, 0, 0, 0.2);
+
+        position: relative;
+        overflow: hidden;
+        /* Important pour masquer les fissures qui dépassent */
+        transition: transform 0.1s;
+    }
+
+    /* FISSURES (SVG OVERLAY) */
+    .crack-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        opacity: 0.8;
+    }
+
+    .crack-path {
+        fill: none;
+        stroke: #3e2702;
+        stroke-width: 2;
+        /* Fissure sombre */
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-dasharray: 600;
+        stroke-dashoffset: 600;
+        /* Caché au début */
+        transition: stroke-dashoffset 0.3s ease-out;
+        filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.3));
+        /* Petit relief sur la fissure */
+    }
+
+    /* MESSAGE SURPRISE */
+    .d9-surprise-box {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(0);
+        text-align: center;
+        width: 90%;
+        z-index: 10;
+        opacity: 0;
+        transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .d9-surprise-box.show {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+    }
+
+    .d9-emoji {
+        font-size: 5rem;
+        animation: bounce 2s infinite;
+    }
+
+    .d9-text {
+        font-family: 'Satisfy', cursive;
+        font-size: 1.6rem;
+        margin: 10px 0;
+        color: #b8860b;
+    }
+
+    .d9-back {
+        background: #b8860b;
+        color: #fff;
+        padding: 8px 25px;
+        border-radius: 20px;
+        text-decoration: none;
+        font-weight: bold;
+        font-size: 1rem;
+        display: inline-block;
+        box-shadow: 0 4px 10px rgba(184, 134, 11, 0.3);
+    }
+
+    /* ANIMATIONS */
+
+    /* Tremblement intense */
+    .shaking {
+        animation: wobble 0.4s cubic-bezier(.36, .07, .19, .97) both;
+    }
+
+    @keyframes wobble {
+        0% {
+            transform: translate(0, 0) rotate(0);
+        }
+
+        15% {
+            transform: translate(-6px, 0) rotate(-6deg);
+        }
+
+        30% {
+            transform: translate(5px, 0) rotate(5deg);
+        }
+
+        45% {
+            transform: translate(-4px, 0) rotate(-4deg);
+        }
+
+        60% {
+            transform: translate(3px, 0) rotate(3deg);
+        }
+
+        75% {
+            transform: translate(-2px, 0) rotate(-2deg);
+        }
+
+        100% {
+            transform: translate(0, 0) rotate(0);
+        }
+    }
+
+    @keyframes bounce {
+
+        0%,
+        100% {
+            transform: translateY(0);
+        }
+
+        50% {
+            transform: translateY(-10px);
+        }
+    }
+
+    /* Eclosion : L'œuf explose */
+    .exploded {
+        animation: explode-fade 0.8s forwards;
+    }
+
+    @keyframes explode-fade {
+        0% {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        50% {
+            transform: scale(1.1);
+            opacity: 0.8;
+        }
+
+        100% {
+            transform: scale(1.5);
+            opacity: 0;
+        }
+    }
+</style>
+
+<div id="day9-scene">
+    <h1 class="d9-title">Jour 9</h1>
+    <div class="d9-instruction" id="d9-instr">Tapote 9 fois pour libérer la magie... (<span id="count">0</span>/9)</div>
+
+    <div class="d9-egg-container" id="egg">
+        <div class="golden-egg">
+            <!-- Overlay pour les fissures vectorielles -->
+            <svg class="crack-overlay" viewBox="0 0 200 280">
+                <!-- Une grande fissure complexe qui parcourt tout l'œuf -->
+                <!-- On la dessine en une seule ligne continue ou presque -->
+                <path id="main-crack" class="crack-path" d="M100,50 
+                         L110,70 L90,85 L120,110 
+                         L80,130 L130,150 
+                         L70,180 L140,200 
+                         L90,230 L120,250" />
+            </svg>
+        </div>
+    </div>
+
+    <div class="d9-surprise-box" id="surprise">
+        <div class="d9-emoji">🐣 ✨</div>
+        <p class="d9-text">La patience révèle<br>les plus beaux trésors !</p>
+        <a href="index.html" class="d9-back" target="_top">Merci</a>
+    </div>
+</div>
+
+<script>
+    (function () {
+        const egg = document.getElementById('egg');
+        const crackPath = document.getElementById('main-crack');
+        const countSpan = document.getElementById('count');
+        const d9Scene = document.getElementById('day9-scene');
+        const surprise = document.getElementById('surprise');
+        const title = document.querySelector('.d9-title');
+        const instr = document.getElementById('d9-instr');
+
+        let taps = 0;
+        const TARGET_TAPS = 9;
+
+        // Config fissure
+        const totalLen = crackPath.getTotalLength();
+        crackPath.style.strokeDasharray = totalLen;
+        crackPath.style.strokeDashoffset = totalLen; // Caché
+
+        let isDone = false;
+
+        egg.addEventListener('click', function () {
+            if (isDone) return;
+            taps++;
+            countSpan.textContent = taps;
+
+            // 1. Animation Shake
+            egg.classList.remove('shaking');
+            void egg.offsetWidth; // Reflow
+            egg.classList.add('shaking');
+
+            // 2. Progression Fissure
+            // On révèle une portion proportionnelle au nombre de clics
+            const progress = taps / TARGET_TAPS;
+            const newOffset = totalLen * (1 - progress);
+            crackPath.style.strokeDashoffset = newOffset;
+
+            // Vibration haptique (augmente avec les coups)
+            if (navigator.vibrate) {
+                // Durée augmente avec les taps : 50ms, 70ms, 90ms...
+                navigator.vibrate(50 + (taps * 15));
+            }
+
+            // 3. Eclosion
+            if (taps >= TARGET_TAPS) {
+                isDone = true;
+                setTimeout(hatchEgg, 500); // Attendre la fin du dernier shake
+            }
+        });
+
+        function hatchEgg() {
+            // Son (si dispo)
+            const audio = new Audio('images/pop.mp3');
+            audio.play().catch(() => { });
+
+            // Explosion visuelle
+            egg.classList.add('exploded');
+            instr.style.opacity = 0;
+            title.style.opacity = 0;
+
+            // Apparition surprise
+            setTimeout(() => {
+                surprise.classList.add('show');
+                // Pluie de confettis ou effet simple
+            }, 600);
+        }
+    })();
+</script>
