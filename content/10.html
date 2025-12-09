@@ -1,0 +1,389 @@
+<style>
+    #day10-scene {
+        position: relative;
+        width: 100%;
+        height: 60vh;
+        max-height: 500px;
+        min-height: 400px;
+        background: #fff;
+        /* Fond blanc simple */
+        font-family: 'Montserrat', sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        color: #d4af37;
+        perspective: 1000px;
+    }
+
+    /* BUZZER */
+    .buzzer-container {
+        position: relative;
+        width: 120px;
+        height: 120px;
+        z-index: 10;
+        transition: transform 0.5s ease-in-out, opacity 0.5s;
+    }
+
+    .buzzer-base {
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 140px;
+        height: 40px;
+        background: linear-gradient(90deg, #333 0%, #666 50%, #333 100%);
+        border-radius: 10px;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .buzzer-btn {
+        position: absolute;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 80px;
+        background: radial-gradient(circle at 30% 30%, #ffd700 0%, #daa520 40%, #b8860b 80%);
+        border-radius: 50%;
+        box-shadow:
+            0 5px 0 #8b6914,
+            0 10px 10px rgba(0, 0, 0, 0.2),
+            inset 0 0 20px rgba(255, 255, 255, 0.4);
+        cursor: pointer;
+        transition: transform 0.1s, box-shadow 0.1s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .buzzer-btn::after {
+        content: '';
+        width: 80px;
+        height: 60px;
+        border-radius: 50%;
+        background: linear-gradient(to bottom, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0) 100%);
+        position: absolute;
+        top: 5px;
+    }
+
+    .buzzer-btn.pressed {
+        transform: translateX(-50%) translateY(5px);
+        box-shadow:
+            0 0 0 #8b6914,
+            0 5px 5px rgba(0, 0, 0, 0.2),
+            inset 0 0 20px rgba(255, 255, 255, 0.4);
+    }
+
+    /* LUMIERES ET EFFETS */
+    .spotlights {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.5s;
+    }
+
+    .light-beam {
+        position: absolute;
+        bottom: 0;
+        width: 200px;
+        height: 150%;
+        background: linear-gradient(to top, rgba(255, 165, 0, 0.2) 0%, rgba(255, 215, 0, 0) 80%);
+        transform-origin: bottom center;
+        filter: blur(20px);
+        animation: rotateLight 4s infinite ease-in-out alternate;
+    }
+
+    .light-left {
+        left: 10%;
+        transform: rotate(-25deg);
+        animation-delay: 0s;
+    }
+
+    .light-right {
+        right: 10%;
+        transform: rotate(25deg);
+        animation-delay: 1s;
+    }
+
+    @keyframes rotateLight {
+        0% {
+            transform: rotate(-30deg);
+            opacity: 0.5;
+        }
+
+        100% {
+            transform: rotate(-10deg);
+            opacity: 0.8;
+        }
+    }
+
+    .light-right {
+        @keyframes rotateLightRight {
+            0% {
+                transform: rotate(30deg);
+                opacity: 0.5;
+            }
+
+            100% {
+                transform: rotate(10deg);
+                opacity: 0.8;
+            }
+        }
+
+        animation-name: rotateLightRight;
+    }
+
+    /* TEXTE MEILLEURE MAMAN */
+    .winner-text-container {
+        position: absolute;
+        top: 40%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(0);
+        z-index: 20;
+        opacity: 0;
+        transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        text-align: center;
+        width: 90%;
+    }
+
+    .winner-text-container.show {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+    }
+
+    .gold-text {
+        font-family: 'Satisfy', cursive;
+        font-size: 2.5rem;
+        margin: 0;
+        line-height: 1.4;
+        background: linear-gradient(to right, #bf953f, #cbb55f, #b38728, #cbb55f, #aa771c);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        color: transparent;
+        filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.5));
+        /* Animation subtile de brillance */
+        background-size: 200% auto;
+        animation: shine 3s linear infinite;
+    }
+
+    @keyframes shine {
+        to {
+            background-position: 200% center;
+        }
+    }
+
+    .sub-text {
+        font-family: 'Montserrat', sans-serif;
+        color: #b8860b;
+        font-size: 1.2rem;
+        margin-top: 20px;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        opacity: 0;
+        transform: translateY(20px);
+        transition: all 0.5s 0.5s;
+    }
+
+    .winner-text-container.show .sub-text {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    /* CONFETTI CANVAS */
+    #confetti-canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 15;
+    }
+
+    .flash-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: #fff;
+        opacity: 0;
+        pointer-events: none;
+        z-index: 50;
+        transition: opacity 0.2s;
+    }
+
+    .flash-overlay.flash {
+        opacity: 0.8;
+    }
+
+    /* BACK BUTTON */
+    .d10-back {
+        margin-top: 30px;
+        background: #b8860b;
+        color: #fff;
+        padding: 10px 30px;
+        border-radius: 25px;
+        text-decoration: none;
+        font-weight: bold;
+        font-size: 1rem;
+        display: inline-block;
+        box-shadow: 0 4px 15px rgba(184, 134, 11, 0.4);
+        opacity: 0;
+        transform: translateY(20px);
+        pointer-events: none;
+        transition: opacity 0.5s 1.5s, transform 0.5s 1.5s;
+    }
+
+    .d10-back:hover {
+        background: #da520;
+        transform: translateY(-2px);
+    }
+
+    .winner-text-container.show .d10-back {
+        opacity: 1;
+        transform: translateY(0);
+        pointer-events: auto;
+    }
+</style>
+
+<div id="day10-scene">
+    <div class="spotlights" id="lights">
+        <div class="light-beam light-left"></div>
+        <div class="light-beam light-right"></div>
+    </div>
+
+    <div class="buzzer-container" id="buzzer-wrapper">
+        <div class="buzzer-base"></div>
+        <div class="buzzer-btn" id="buzzer"></div>
+    </div>
+
+    <div class="winner-text-container" id="winner-msg">
+        <h1 class="gold-text">Etre une maman comme toi, c'est un incroyable talent</h1>
+        <p class="sub-text">C'est un OUI !</p>
+        <a href="index.html" class="d10-back" target="_top">Retour</a>
+    </div>
+
+    <div class="flash-overlay" id="flash"></div>
+    <canvas id="confetti-canvas"></canvas>
+</div>
+
+<script>
+    (function () {
+        const buzzerBtn = document.getElementById('buzzer');
+        const buzzerWrapper = document.getElementById('buzzer-wrapper');
+        const lights = document.getElementById('lights');
+        const winnerMsg = document.getElementById('winner-msg');
+        const flash = document.getElementById('flash');
+        const canvas = document.getElementById('confetti-canvas');
+        const ctx = canvas.getContext('2d');
+
+        // Resize Canvas
+        function resize() {
+            canvas.width = document.getElementById('day10-scene').clientWidth;
+            canvas.height = document.getElementById('day10-scene').clientHeight;
+        }
+        resize();
+        window.addEventListener('resize', resize);
+
+        // 1. Play DRUM ROLL immediately
+        // Note: Assurez-vous que drum.mp3 est dans le dossier images/
+        const drumAudio = new Audio('images/drum.mp3');
+        drumAudio.volume = 0.7;
+        drumAudio.play().catch(err => {
+            console.log("Autoplay bloqué ou fichier manquant :", err);
+        });
+
+        // 2. DELAY 5 SECONDS BEFORE ACTIVATION
+        setTimeout(activateGoldenBuzzer, 5000);
+
+        function activateGoldenBuzzer() {
+            // Press Buzzer
+            buzzerBtn.classList.add('pressed');
+
+            // Play Victory Sound
+            const audio = new Audio('images/paradise.mp3');
+            audio.play().catch(() => { });
+
+            // Effect Sequence
+            setTimeout(() => {
+                // Flash
+                flash.classList.add('flash');
+                setTimeout(() => flash.classList.remove('flash'), 500);
+
+                // Show Lights
+                lights.style.opacity = '1';
+
+                // Hide Buzzer
+                buzzerWrapper.style.transform = 'translateY(150px) scale(0.8)';
+                buzzerWrapper.style.opacity = '0';
+
+                // Show Text
+                winnerMsg.classList.add('show');
+
+                // Start Confetti
+                startConfetti();
+
+            }, 200);
+        }
+
+        // CONFETTI ENGINE
+        let particles = [];
+        const colors = ['#FFD700', '#DAA520', '#B8860B', '#FKA500', '#886311'];
+
+        function startConfetti() {
+            for (let i = 0; i < 100; i++) {
+                particles.push(createParticle());
+            }
+            requestAnimationFrame(updateConfetti);
+        }
+
+        function createParticle() {
+            return {
+                x: Math.random() * canvas.width,
+                y: -Math.random() * canvas.height,
+                w: Math.random() * 8 + 4,
+                h: Math.random() * 8 + 4,
+                color: colors[Math.floor(Math.random() * colors.length)],
+                speedY: Math.random() * 3 + 2,
+                speedX: Math.random() * 2 - 1,
+                rotation: Math.random() * 360,
+                rotationSpeed: Math.random() * 5 - 2.5
+            };
+        }
+
+        function updateConfetti() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach((p) => {
+                p.y += p.speedY;
+                p.x += p.speedX;
+                p.rotation += p.rotationSpeed;
+
+                ctx.save();
+                ctx.translate(p.x, p.y);
+                ctx.rotate(p.rotation * Math.PI / 180);
+                ctx.fillStyle = p.color;
+                ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+                ctx.restore();
+
+                if (p.y > canvas.height) {
+                    p.y = -20;
+                    p.x = Math.random() * canvas.width;
+                }
+            });
+
+            if (Math.random() < 0.1) particles.push(createParticle());
+            if (particles.length > 200) particles.shift();
+
+            requestAnimationFrame(updateConfetti);
+        }
+
+    })();
+</script>
