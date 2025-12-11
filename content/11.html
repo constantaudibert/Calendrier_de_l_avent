@@ -1,0 +1,1112 @@
+<style>
+    /* Global Styles for the Map Module */
+    #treasure-map-container {
+        width: 100%;
+        height: 600px;
+        position: relative;
+        overflow: hidden;
+        background: #ffffff;
+        background-image: radial-gradient(#f1c40f 1px, transparent 1px);
+        background-size: 40px 40px;
+        border: 2px solid #d4af37;
+        border-radius: 15px;
+        box-shadow: 0 0 30px rgba(241, 196, 15, 0.2);
+        font-family: 'Montserrat', sans-serif;
+        color: #444;
+    }
+
+    /* Paper texture overlay */
+    /* Paper texture removed for clean white theme */
+    #treasure-map-container::before {
+        content: none;
+    }
+
+    h2.map-title {
+        text-align: center;
+        font-size: 2.5em;
+        margin-top: 15px;
+        font-family: 'Satisfy', cursive;
+        color: #d4af37;
+        text-shadow: 0 2px 5px rgba(212, 175, 55, 0.3);
+        z-index: 2;
+        position: relative;
+    }
+
+    /* SVG Path styling */
+    #map-svg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+        pointer-events: none;
+    }
+
+    .path-line {
+        fill: none;
+        stroke: #d4af37;
+        /* Gold */
+        stroke-width: 4;
+        stroke-dasharray: 12, 12;
+        /* Pointillé explicitly requested */
+        stroke-linecap: round;
+        filter: drop-shadow(0px 2px 2px rgba(212, 175, 55, 0.4));
+        opacity: 0;
+        transition: opacity 1.5s ease-out;
+    }
+
+    /* Landmarks / Nodes */
+    .landmark {
+        position: absolute;
+        width: 50px;
+        height: 50px;
+        background: #fff;
+        border: 3px solid #d4af37;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 24px;
+        cursor: pointer;
+        z-index: 10;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        transition: transform 0.2s, background 0.3s;
+    }
+
+    .landmark.locked {
+        background: #ccc;
+        filter: grayscale(100%);
+        pointer-events: none;
+    }
+
+    .landmark.completed {
+        background: #d4af37;
+        border-color: #bfa030;
+        color: white;
+    }
+
+    /* Positioning Nodes */
+    #node-1 {
+        bottom: 25%;
+        left: 20%;
+    }
+
+    #node-2 {
+        top: 25%;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    #node-x {
+        bottom: 25%;
+        right: 20%;
+        font-weight: bold;
+        font-family: sans-serif;
+        color: #d4af37;
+        border-color: #d4af37;
+    }
+
+    .node-label {
+        position: absolute;
+        top: 55px;
+        /* Below the 50px circle */
+        left: 50%;
+        transform: translateX(-50%);
+        white-space: nowrap;
+        font-size: 14px;
+        color: #5a3e2b;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: bold;
+        text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+        width: max-content;
+    }
+
+    /* The X mark on the ground */
+    .final-x-mark {
+        position: absolute;
+        font-size: 60px;
+        color: #d4af37;
+        font-weight: bold;
+        opacity: 0;
+        transform: scale(0.5);
+        transition: opacity 0.5s, transform 0.5s;
+        z-index: 5;
+        cursor: pointer;
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+
+        /* Improve Click Area */
+        width: 80px;
+        height: 80px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        /* Center origin for transform */
+        transform-origin: center;
+    }
+
+    /* Magic Gold Dust effect on the X */
+    .snow-cover {
+        position: absolute;
+        width: 80px;
+        height: 80px;
+        background: radial-gradient(circle, rgba(212, 175, 55, 0.6) 20%, rgba(212, 175, 55, 0) 70%);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 1s;
+        z-index: 6;
+    }
+
+    /* Challenge Popups (Mini-modals) */
+    .challenge-popup {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(0.9);
+        width: 80%;
+        max-width: 300px;
+        background: rgba(255, 255, 255, 0.98);
+        backdrop-filter: blur(5px);
+        padding: 20px;
+        border-radius: 15px;
+        border: 2px solid #d4af37;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        z-index: 100;
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        opacity: 0;
+        transition: opacity 0.3s, transform 0.3s;
+    }
+
+    .challenge-popup.active {
+        display: flex;
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+
+    .challenge-popup h3 {
+        margin: 0 0 10px 0;
+        color: #d4af37;
+        font-family: 'Satisfy', cursive;
+        font-size: 1.8em;
+    }
+
+    .challenge-popup input {
+        padding: 5px;
+        margin: 10px 0;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    .challenge-popup button {
+        background: #d4af37;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 20px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: background 0.2s;
+    }
+
+    .challenge-popup button:hover {
+        background: #bfa030;
+    }
+
+    /* CHEST & REWARD */
+    #chest-container {
+        position: absolute;
+        bottom: 20%;
+        right: 10%;
+        width: 80px;
+        height: 80px;
+        z-index: 20;
+        display: none;
+        /* Shown after tapping loop */
+        cursor: pointer;
+    }
+
+    .chest-img {
+        width: 100%;
+        height: auto;
+        transform-origin: bottom center;
+        transition: transform 0.1s;
+    }
+
+    .chest-img:hover {
+        transform: scale(1.05);
+    }
+
+    #reward-display {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.8);
+        z-index: 200;
+        display: none;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        color: white;
+    }
+
+    #reward-display img {
+        max-width: 80%;
+        max-height: 60%;
+        border: 5px solid gold;
+        border-radius: 10px;
+        box-shadow: 0 0 20px gold;
+        margin-bottom: 20px;
+    }
+
+    /* Animation classes */
+    /* Snow Globe Styles */
+    .snow-globe-container {
+        position: relative;
+        width: 200px;
+        height: 240px;
+        margin: 0 auto;
+        cursor: pointer;
+        transition: transform 0.2s;
+    }
+
+    .globe-glass {
+        width: 180px;
+        height: 180px;
+        /* Glassy / Wintery Background */
+        background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.4), rgba(200, 230, 255, 0.2) 60%, rgba(180, 220, 250, 0.4) 100%);
+        border: 2px solid rgba(255, 255, 255, 0.9);
+        border-radius: 50%;
+        position: relative;
+        overflow: hidden;
+        margin: 0 auto;
+        box-shadow:
+            inset 10px 10px 20px rgba(255, 255, 255, 0.8),
+            /* Highlight */
+            inset -5px -10px 20px rgba(0, 50, 100, 0.1),
+            /* Shadow */
+            0 0 15px rgba(255, 255, 255, 0.8),
+            /* Outer glow */
+            0 10px 20px rgba(0, 0, 0, 0.15);
+        z-index: 2;
+    }
+
+    /* Reflection shine */
+    .globe-glass::before {
+        content: '';
+        position: absolute;
+        top: 8%;
+        left: 10%;
+        width: 35%;
+        height: 20%;
+        border-radius: 50%;
+        background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0) 70%);
+        opacity: 0.8;
+        pointer-events: none;
+        z-index: 5;
+    }
+
+    .dog-inside {
+        position: absolute;
+        bottom: 12px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 110px;
+        /* Bigger dog */
+        height: auto;
+        z-index: 2;
+        /* Behind snow, in front of ground */
+    }
+
+    .snow-ground {
+        position: absolute;
+        bottom: -22px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 140%;
+        height: 60px;
+        background: linear-gradient(to top, #ffffff 40%, #e6f7ff 100%);
+        border-radius: 50%;
+        box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.05);
+        z-index: 1;
+    }
+
+    .globe-base {
+        width: 140px;
+        height: 40px;
+        background: #8b4513;
+        border-radius: 10px;
+        margin: -20px auto 0;
+        position: relative;
+        z-index: 1;
+        background: linear-gradient(to right, #8b4513, #a0522d, #8b4513);
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+        border: 2px solid #5a3e2b;
+    }
+
+    .snowflake {
+        position: absolute;
+        top: -10px;
+        color: white;
+        font-size: 10px;
+        user-select: none;
+        pointer-events: none;
+        animation: fall linear forwards;
+    }
+
+    @keyframes fall {
+        to {
+            transform: translateY(200px);
+        }
+    }
+
+    .shake-anim {
+        animation: shake-globe 0.5s ease-in-out infinite;
+    }
+
+    @keyframes shake-globe {
+
+        0%,
+        100% {
+            transform: rotate(0deg);
+        }
+
+        25% {
+            transform: rotate(-5deg);
+        }
+
+        75% {
+            transform: rotate(5deg);
+        }
+    }
+
+    /* Snowman Game Styles */
+    .snowman-game-area {
+        position: relative;
+        width: 100%;
+        height: 250px;
+        background: #e6f7ff;
+        /* Light icy blue background */
+        border-radius: 10px;
+        overflow: hidden;
+        margin-bottom: 10px;
+        border: 2px solid #b3e5fc;
+    }
+
+    .sun {
+        position: absolute;
+        top: -40px;
+        right: -40px;
+        width: 60px;
+        height: 60px;
+        background: #f1c40f;
+        border-radius: 50%;
+        box-shadow: 0 0 20px #f39c12;
+        transition: top 1s ease-out, right 1s ease-out, transform 2s linear;
+        z-index: 5;
+    }
+
+    .sun.rising {
+        top: 10px;
+        right: 10px;
+        transform: rotate(360deg) scale(1.2);
+    }
+
+    .snowman-container {
+        position: absolute;
+        bottom: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        transition: transform 2s ease-in, opacity 2s ease-in;
+        transform-origin: bottom center;
+    }
+
+    .snowman-container.melted {
+        transform: translateX(-50%) scaleY(0.2) scaleX(1.4);
+        opacity: 0.7;
+    }
+
+    .snow-part {
+        background: white;
+        border-radius: 50%;
+        box-shadow: inset -2px -2px 5px rgba(0, 0, 0, 0.1);
+        position: relative;
+    }
+
+    .head {
+        width: 50px;
+        height: 50px;
+        z-index: 3;
+    }
+
+    .body-mid {
+        width: 70px;
+        height: 70px;
+        margin-top: -10px;
+        z-index: 2;
+    }
+
+    .body-low {
+        width: 90px;
+        height: 90px;
+        margin-top: -15px;
+        z-index: 1;
+    }
+
+    /* Target Zones on Snowman */
+    .zone {
+        position: absolute;
+        background: rgba(0, 0, 0, 0.05);
+        /* Faint guide */
+        border-radius: 50%;
+    }
+
+    .eye-zone-left {
+        top: 15px;
+        left: 12px;
+        width: 8px;
+        height: 8px;
+    }
+
+    .eye-zone-right {
+        top: 15px;
+        right: 12px;
+        width: 8px;
+        height: 8px;
+    }
+
+    .nose-zone {
+        top: 25px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 10px;
+        height: 10px;
+    }
+
+    .btn-zone-1 {
+        top: 15px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 10px;
+        height: 10px;
+    }
+
+    .btn-zone-2 {
+        top: 30px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 10px;
+        height: 10px;
+    }
+
+    .btn-zone-3 {
+        top: 45px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 10px;
+        height: 10px;
+    }
+
+    /* The Hidden Hat */
+    .hidden-hat {
+        position: absolute;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%) scale(0);
+        font-size: 40px;
+        transition: transform 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        transition-delay: 1.5s;
+        /* Wait for melt */
+        z-index: 0;
+    }
+
+    .hidden-hat.revealed {
+        transform: translateX(-50%) scale(1.5);
+        z-index: 10;
+        /* Pop on top of puddle */
+    }
+
+    /* Inventory / Accessories */
+    .accessories-panel {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        flex-wrap: wrap;
+        padding: 5px;
+        background: #f7f7f7;
+        border-radius: 8px;
+        min-height: 40px;
+    }
+
+    .accessory {
+        width: 25px;
+        height: 25px;
+        cursor: pointer;
+        transition: transform 0.2s;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 20px;
+        user-select: none;
+    }
+
+    .accessory:hover {
+        transform: scale(1.2);
+    }
+
+    .accessory.placed {
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    /* Placed items on snowman */
+    .placed-item {
+        position: absolute;
+        transform: translate(-50%, -50%);
+        pointer-events: none;
+        animation: popIn 0.3s;
+    }
+
+    @keyframes popIn {
+        from {
+            transform: translate(-50%, -50%) scale(0);
+        }
+
+        to {
+            transform: translate(-50%, -50%) scale(1);
+        }
+    }
+
+    /* Override shake for this popup if needed, but existing is fine */
+</style>
+
+<div id="treasure-map-container">
+    <h2 class="map-title">Bonnets disparus</h2>
+
+    <svg id="map-svg" xmlns="http://www.w3.org/2000/svg">
+        <!-- Defined in JS -->
+    </svg>
+
+    <!-- Path landmarks -->
+    <!-- Path landmarks -->
+    <div id="node-1" class="landmark" onclick="openChallenge(1)">
+        1
+        <div class="node-label">Le voleur enneigé</div>
+    </div>
+    <div id="node-2" class="landmark locked" onclick="openChallenge(2)">
+        2
+        <div class="node-label">La boule à neige</div>
+    </div>
+
+    <!-- The X Mark area -->
+    <div id="node-x" class="final-x-mark" onclick="tapSnow()">X</div>
+    <div id="snow-overlay" class="snow-cover"></div>
+
+    <!-- The Chest -->
+    <div id="chest-container" onclick="openChest()">
+        <div style="font-size: 60px;">🎁</div> <!-- Placeholder for chest image -->
+    </div>
+
+    <!-- Challenges -->
+    <div id="challenge-1" class="challenge-popup">
+        <h3>Le voleur enneigé</h3>
+        <p style="font-size: 0.9em; margin-bottom: 10px;">Habille le bonhomme de neige !</p>
+
+        <div class="snowman-game-area">
+            <div id="game-sun" class="sun" onclick="activateSun()" title="Clique sur le soleil !"></div>
+
+            <div id="hidden-hat" class="hidden-hat">🎅</div>
+
+            <div id="snowman" class="snowman-container">
+                <div class="snow-part head">
+                    <!-- Target Zones -->
+                    <div class="zone eye-zone-left" id="zone-eye-1"></div>
+                    <div class="zone eye-zone-right" id="zone-eye-2"></div>
+                    <div class="zone nose-zone" id="zone-nose"></div>
+                </div>
+                <div class="snow-part body-mid">
+                    <div class="zone btn-zone-1" id="zone-btn-1"></div>
+                    <div class="zone btn-zone-2" id="zone-btn-2"></div>
+                </div>
+                <div class="snow-part body-low">
+                    <!-- Zone 3 removed -->
+                </div>
+            </div>
+        </div>
+
+        <div class="accessories-panel" id="accessory-tray">
+            <!-- Items filled by JS -->
+        </div>
+
+        <p id="feedback-1" style="font-size:0.8em; color:#d4af37; margin-top:5px; min-height:1.2em;"></p>
+    </div>
+
+    <div id="challenge-2" class="challenge-popup">
+        <h3>Boule à Neige Magique</h3>
+
+        <div class="snow-globe-container" id="snow-globe" onclick="triggerSnow()">
+            <div class="globe-glass">
+                <div id="snow-particles"></div>
+                <!-- Dog inside with snow ground -->
+                <img src="images/berger_allemand.png" class="dog-inside" alt="Berger Allemand">
+                <div class="snow-ground"></div>
+            </div>
+            <div class="globe-base">
+                <div style="text-align:center; padding-top:10px; color:#f1c40f; font-size:12px;">UNA</div>
+            </div>
+        </div>
+        <p id="feedback-2" style="font-size:0.8em; color:#d4af37; margin-top:5px; min-height:1.2em;"></p>
+
+        <!-- Button to request permission on iOS 13+ -->
+        <button id="perm-btn" onclick="requestMotionPermission()"
+            style="display:none; margin-top:10px; font-size:0.8em;">Activer le capteur</button>
+    </div>
+
+
+
+    <!-- Reward Overlay -->
+    <div id="reward-display" onclick="this.style.display='none'">
+        <img src="images/reward.jpg" alt="Reward">
+        <h2>Tu as retrouvé les bonnets de Noël !</h2>
+        <p>(Clique pour fermer)</p>
+    </div>
+
+</div>
+
+<script>
+    // --- Configuration ---
+    let currentStage = 1;
+    let snowTaps = 0;
+    const maxSnowTaps = 5;
+
+    // Snowman Game State
+    const neededItems = [
+        { type: 'eye', id: 'zone-eye-1' },
+        { type: 'eye', id: 'zone-eye-2' },
+        { type: 'nose', id: 'zone-nose' },
+        { type: 'btn', id: 'zone-btn-1' },
+        { type: 'btn', id: 'zone-btn-2' }
+    ];
+    let placedItemsCount = 0;
+
+    function initSnowmanGame() {
+        // Reset state
+        placedItemsCount = 0;
+        const tray = document.getElementById('accessory-tray');
+        tray.innerHTML = '';
+        document.getElementById('snowman').className = 'snowman-container';
+        document.getElementById('hidden-hat').className = 'hidden-hat';
+        document.getElementById('game-sun').className = 'sun';
+        document.getElementById('feedback-1').textContent = '';
+
+        // Clear previous placed items from zones
+        document.querySelectorAll('.placed-item').forEach(el => el.remove());
+
+        // Create draggable items
+        // Create draggable items (CSS styled for reliability)
+        const items = [
+            { type: 'eye', color: '#2c3e50' }, // Black/Dark Blue
+            { type: 'eye', color: '#2c3e50' },
+            { type: 'nose', char: '🥕' }, // Carrot emoji is usually fine
+            { type: 'btn', color: '#e74c3c' }, // Red
+            { type: 'btn', color: '#3498db' }, // Blue
+        ];
+
+        // Shuffle simple array
+        items.sort(() => Math.random() - 0.5);
+
+        items.forEach((item, index) => {
+            const el = document.createElement('div');
+            el.className = 'accessory';
+
+            if (item.type === 'nose') {
+                el.textContent = item.char;
+                el.style.fontSize = '24px';
+            } else {
+                // Render as colored circle
+                el.style.backgroundColor = item.color;
+                el.style.width = '20px';
+                el.style.height = '20px';
+                el.style.borderRadius = '50%';
+                el.style.boxShadow = '0 2px 4px rgba(0,0,0,0.2)';
+            }
+
+            el.onclick = () => placeItem(el, item);
+            tray.appendChild(el);
+        });
+    }
+
+    function placeItem(element, itemData) {
+        if (element.classList.contains('placed')) return;
+
+        // Find a free zone for this type
+        const freeZone = neededItems.find(z => z.type === itemData.type && !document.getElementById(z.id).hasChildNodes());
+
+        if (freeZone) {
+            // Animate or move to zone
+            element.classList.add('placed');
+
+            const zoneEl = document.getElementById(freeZone.id);
+            const placedEl = document.createElement('div');
+            placedEl.className = 'placed-item';
+
+            if (itemData.type === 'nose') {
+                placedEl.textContent = itemData.char;
+                placedEl.style.fontSize = '24px';
+            } else {
+                placedEl.style.backgroundColor = itemData.color;
+                placedEl.style.width = itemData.type === 'eye' ? '12px' : '16px';
+                placedEl.style.height = itemData.type === 'eye' ? '12px' : '16px';
+                placedEl.style.borderRadius = '50%';
+                placedEl.style.boxShadow = 'inset -1px -1px 2px rgba(0,0,0,0.3)';
+            }
+
+            placedEl.style.position = 'absolute';
+            placedEl.style.left = '50%';
+            placedEl.style.top = '50%';
+            placedEl.style.transform = 'translate(-50%, -50%)';
+
+            zoneEl.appendChild(placedEl);
+            placedItemsCount++;
+
+            checkSnowmanProgress();
+        } else {
+            // Shake feedback if no zone available (shouldn't happen if counts match)
+        }
+    }
+
+    function checkSnowmanProgress() {
+        if (placedItemsCount >= neededItems.length) {
+            // All items placed - Prompt user to find the hat (by clicking sun)
+            document.getElementById('feedback-1').textContent = "M.Neige à volé le bonnet. Trouve un moyen de lui prendre";
+            document.getElementById('feedback-1').style.color = "#d4af37";
+
+            const sun = document.getElementById('game-sun');
+            sun.style.cursor = 'pointer';
+            // Subtle pulse to indicate interactivity
+            sun.style.animation = 'sapinPulse 1s infinite alternate';
+        }
+    }
+
+    window.activateSun = function () {
+        if (placedItemsCount >= neededItems.length) {
+            const sun = document.getElementById('game-sun');
+            if (sun.classList.contains('rising')) return; // Already triggered
+
+            // Stop pulse
+            sun.style.animation = '';
+            meltSnowman();
+        }
+    };
+
+    function meltSnowman() {
+        const sun = document.getElementById('game-sun');
+        sun.classList.add('rising');
+
+        setTimeout(() => {
+            const snowman = document.getElementById('snowman');
+            snowman.classList.add('melted');
+
+            // Reveal Hat
+            const hat = document.getElementById('hidden-hat');
+            hat.classList.add('revealed');
+
+            // Success feedback
+            setTimeout(() => {
+                const feedback = document.getElementById('feedback-1');
+                feedback.innerHTML = "tu as trouvé le bonnet de noël !";
+                feedback.style.color = "#2e7d32";
+                setTimeout(() => completeStage(1), 2500);
+            }, 2000);
+
+        }, 1000);
+    }
+
+    // --- Path Drawing Logic ---
+    // Coordinates relative to 600px height container and % widths
+    // Ideally we calculate centers of nodes immediately
+    function getCenter(element) {
+        const rect = element.getBoundingClientRect();
+        const parent = document.getElementById('treasure-map-container').getBoundingClientRect();
+        return {
+            x: rect.left - parent.left + rect.width / 2,
+            y: rect.top - parent.top + rect.height / 2
+        };
+    }
+
+    function initMap() {
+        // Draw initial invisible paths
+        // We will do this dynamically or just pre-calculate approximate coords
+        // Let's use computed styles once DOM is fully rendered
+        // Give a slight delay to ensure layout is done
+        setTimeout(updatePaths, 100);
+    }
+
+    function updatePaths() {
+        const svg = document.getElementById('map-svg');
+        const p1 = getCenter(document.getElementById('node-1'));
+        const p2 = getCenter(document.getElementById('node-2'));
+        const px = getCenter(document.getElementById('node-x')); // Use getCenter for consistency
+
+        // Create paths if not exist
+        if (!document.getElementById('path-1-2')) {
+            createPath(svg, 'path-1-2', p1, p2);
+            createPath(svg, 'path-2-x', p2, px);
+        }
+    }
+
+    function createPath(svg, id, start, end) {
+        // Curve control point (simple quadratic bezier)
+        const mx = (start.x + end.x) / 2;
+        const my = (start.y + end.y) / 2 - 50; // Curve up
+
+        const pathStr = `M ${start.x} ${start.y} Q ${mx} ${my} ${end.x} ${end.y}`;
+
+        const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        path.setAttribute("d", pathStr);
+        path.setAttribute("id", id);
+        path.setAttribute("class", "path-line");
+        // Removed dash manipulation that breaks dotted effect
+        // path.style.strokeDasharray = "1000"; 
+        // path.style.strokeDashoffset = "1000"; 
+        path.style.opacity = "0"; // Hidden initially
+        svg.appendChild(path);
+    }
+
+    function animatePath(id) {
+        const path = document.getElementById(id);
+        if (path) {
+            if (path) {
+                path.style.opacity = "1";
+            }
+        }
+    }
+
+    // --- Game Logic ---
+
+    // --- Shake / Snow Globe Logic ---
+    let shakeCount = 0;
+    let requiredShakes = 5;
+    let lastSnowTime = 0;
+
+    function initShakeDetection() {
+        if (typeof DeviceMotionEvent !== 'undefined') {
+            // Check if permission is needed (iOS 13+)
+            if (typeof DeviceMotionEvent.requestPermission === 'function') {
+                document.getElementById('perm-btn').style.display = 'inline-block';
+            } else {
+                window.addEventListener('devicemotion', handleMotion);
+            }
+        }
+    }
+
+    function requestMotionPermission() {
+        DeviceMotionEvent.requestPermission()
+            .then(response => {
+                if (response === 'granted') {
+                    document.getElementById('perm-btn').style.display = 'none';
+                    window.addEventListener('devicemotion', handleMotion);
+                }
+            })
+            .catch(console.error);
+    }
+
+    function handleMotion(event) {
+        // Simple shake detection logic
+        const acc = event.accelerationIncludingGravity;
+        if (!acc) return;
+
+        const threshold = 15; // Sensitivity
+        const deltaX = Math.abs(acc.x);
+        const deltaY = Math.abs(acc.y);
+        const deltaZ = Math.abs(acc.z);
+
+        if ((deltaX > threshold || deltaY > threshold || deltaZ > threshold)) {
+            // Debounce
+            const now = Date.now();
+            if (now - lastSnowTime > 500) {
+                triggerSnow();
+                lastSnowTime = now;
+            }
+        }
+    }
+
+    window.triggerSnow = function () {
+        if (currentStage !== 2) return;
+
+        shakeCount++;
+        createSnowflakes();
+        const feedback = document.getElementById('feedback-2');
+
+        const globe = document.getElementById('snow-globe');
+        globe.classList.remove('shake-anim');
+        void globe.offsetWidth; // trigger reflow
+        globe.classList.add('shake-anim');
+        setTimeout(() => globe.classList.remove('shake-anim'), 500);
+
+        if (shakeCount >= requiredShakes) {
+            feedback.innerHTML = "C'est magique ! Voici le 2ème bonnet ! 🎅";
+            feedback.style.color = "#2e7d32";
+            setTimeout(() => {
+                completeStage(2);
+                // Stop listening to motion to save battery
+                window.removeEventListener('devicemotion', handleMotion);
+            }, 2000);
+        } else {
+            feedback.textContent = `Encore un peu ! (${shakeCount}/${requiredShakes})`;
+        }
+    };
+
+    function createSnowflakes() {
+        const container = document.getElementById('snow-particles');
+        for (let i = 0; i < 10; i++) {
+            const flake = document.createElement('div');
+            flake.classList.add('snowflake');
+            flake.textContent = '❄';
+            flake.style.left = Math.random() * 100 + '%';
+            flake.style.animationDuration = (Math.random() * 2 + 1) + 's';
+            flake.style.opacity = Math.random();
+            flake.style.fontSize = (Math.random() * 10 + 5) + 'px';
+            container.appendChild(flake);
+
+            // Remove after animation
+            setTimeout(() => flake.remove(), 3000);
+        }
+    }
+
+    window.openChallenge = function (n) {
+        if (n > currentStage) return; // Locked
+        // Hide all others
+        document.querySelectorAll('.challenge-popup').forEach(el => el.classList.remove('active'));
+        document.getElementById(`challenge-${n}`).classList.add('active');
+
+        if (n === 1) {
+            initSnowmanGame();
+        } else if (n === 2) {
+            initShakeDetection();
+            shakeCount = 0; // Reset shake count on open? Optional.
+            document.getElementById('feedback-2').textContent = '';
+        }
+    };
+
+    // Updated checkAnswer to support existing calls if any remain, though math is gone
+    window.checkAnswer = function (n, val) {
+        // This function is no longer used for stage 2, as it's handled by shake detection.
+        // It remains here to avoid breaking any other potential calls, but its logic for n=2 is removed.
+        let correct = false;
+        const feedback = document.getElementById(`feedback-${n}`);
+
+        // Original logic for n=2 removed:
+        // if (n === 2) {
+        //     if (val === 24) correct = true;
+        // }
+
+        if (correct) { // This will only be true if other stages set it
+            feedback.innerHTML = "Bravo ! Tu as trouvé un bonnet ! 🎅";
+            feedback.style.color = "#2e7d32";
+            setTimeout(() => completeStage(n), 1000);
+        } else if (n !== 2) { // Only show error for stages not handled by shake
+            feedback.textContent = "Ce n'est pas ça... Essaie encore !";
+            const popup = document.getElementById(`challenge-${n}`);
+            popup.classList.add('shake');
+            setTimeout(() => popup.classList.remove('shake'), 500);
+        }
+    };
+
+    // Removed Simon Input Logic
+
+    function completeStage(n) {
+        // Hide popup
+        document.getElementById(`challenge-${n}`).classList.remove('active');
+        // Mark node as completed with a Hat Icon
+        const node = document.getElementById(`node-${n}`);
+        node.classList.add('completed');
+        // Preserve label if it exists
+        const label = node.querySelector('.node-label');
+        if (label) {
+            node.firstChild.textContent = '🎅'; // Replace just the number text
+        } else {
+            node.innerText = '🎅';
+        }
+
+        // Advance logic
+        if (n === 1) {
+            currentStage = 2;
+            document.getElementById('node-2').classList.remove('locked');
+            animatePath('path-1-2');
+        } else if (n === 2) {
+            currentStage = 3; // End
+            animatePath('path-2-x');
+            // Reveal X after path animation
+            setTimeout(() => {
+                const xMark = document.getElementById('node-x');
+                xMark.style.opacity = 1;
+                xMark.style.transform = 'scale(1)';
+
+                // Show snow on top
+                const snow = document.getElementById('snow-overlay');
+                const rect = xMark.getBoundingClientRect();
+                const parent = document.getElementById('treasure-map-container').getBoundingClientRect();
+
+                // Snow overlay is 80x80 (defined in CSS)
+                const snowWidth = 80;
+                const snowHeight = 80;
+
+                const centerX = rect.left - parent.left + rect.width / 2;
+                const centerY = rect.top - parent.top + rect.height / 2;
+
+                snow.style.top = (centerY - snowHeight / 2) + 'px';
+                snow.style.left = (centerX - snowWidth / 2) + 'px';
+                snow.style.opacity = 0.8;
+
+            }, 2000);
+        }
+    }
+
+    window.tapSnow = function () {
+        if (currentStage < 3) return;
+
+        snowTaps++;
+        const snow = document.getElementById('snow-overlay');
+        snow.style.opacity = (0.8 - (snowTaps * 0.2));
+
+        if (snowTaps >= 3) {
+            // Calculate coords BEFORE hiding
+            const rect = document.getElementById('node-x').getBoundingClientRect();
+            const parent = document.getElementById('treasure-map-container').getBoundingClientRect();
+
+            // Reveal chest
+            document.getElementById('node-x').style.display = 'none'; // Hide X
+            snow.style.display = 'none';
+
+            const chest = document.getElementById('chest-container');
+
+            // Chest is abs placed, we need to center it where X was
+            const centerX = rect.left - parent.left + rect.width / 2;
+            const centerY = rect.top - parent.top + rect.height / 2;
+
+            // Assuming chest is ~60px wide (font size 60px)
+            chest.style.left = (centerX - 40) + 'px'; // approx centered
+            chest.style.top = (centerY - 50) + 'px'; // slightly up
+
+            chest.style.display = 'block';
+            chest.classList.add('shake'); // Ta-da effect
+        }
+    };
+
+    window.openChest = function () {
+        document.getElementById('reward-display').style.display = 'flex';
+        // Add some confetti or effect here if desired
+    };
+
+    // Run init
+    initMap();
+
+</script>
