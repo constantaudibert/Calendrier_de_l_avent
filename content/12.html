@@ -84,6 +84,14 @@
             border: 4px solid #d4af37;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
             margin-bottom: 20px;
+            opacity: 0;
+            transform: scale(0.8);
+            transition: opacity 1s, transform 1s;
+        }
+
+        .ducoup-img.visible {
+            opacity: 1;
+            transform: scale(1);
         }
 
         .poem {
@@ -110,6 +118,20 @@
             transform: scale(1.05);
             background: #bfa030;
         }
+
+        .verse {
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+            margin-bottom: 8px;
+            display: block;
+            min-height: 1.5em;
+        }
+
+        .verse.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
     </style>
 </head>
 
@@ -124,22 +146,8 @@
         </div>
 
         <div id="reward-area" class="hidden-content">
-            <div class="poem">
-                Du coup, je t'écris ces quelques mots,
-                Une case de plus, pour chasser les maux.
-                Du coup, aujourd'hui c'est un poème,
-                pour te dire combien je t'aime.
-                Du coup, mon amour pour toi dépasse l'infini,
-                sans limite, il est indéfini,
-                Du coup, je peine à le décrire,
-                je ne cesse de te le dire,
-                Du coup, je t'aime plus que tout,
-                beaucoup, beaucoup, beaucoup,
-                12/24 pour le calendrier,
-                Du coup, c'est déjà à la moitié,
-                2025 bientôt du passé, 2026 sera une meilleure année.
-
-                Avec l'aide de ma très chère muse
+            <div class="poem" id="poem-container">
+                <!-- Poem will appear here line by line -->
             </div>
             <img src="images/madame_ducoup.jpeg" alt="Madame Ducoup" class="ducoup-img">
         </div>
@@ -148,6 +156,24 @@
     </div>
 
     <script>
+        const poemLines = [
+            "Du coup, je t'écris ces quelques mots,",
+            "Une case de plus, pour chasser les maux.",
+            "Du coup, aujourd'hui c'est un poème,",
+            "pour te dire combien je t'aime.",
+            "Du coup, mon amour pour toi dépasse l'infini,",
+            "sans limite, il est indéfini,",
+            "Du coup, je peine à le décrire,",
+            "je ne cesse de te le dire,",
+            "Du coup, je t'aime plus que tout,",
+            "beaucoup, beaucoup, beaucoup,",
+            "12/24 pour le calendrier,",
+            "Du coup, c'est déjà à la moitié,",
+            "2025 bientôt du passé, 2026 sera une meilleure année.",
+            "<br>",
+            "Avec l'aide de ma très chère muse"
+        ];
+
         function checkWord() {
             const input = document.getElementById('word-input');
             const val = input.value.toLowerCase().trim();
@@ -156,13 +182,40 @@
             if (val === 'ducoup' || val === 'du coup') {
                 document.getElementById('reward-area').style.display = 'block';
                 input.disabled = true; // Lock input
-                input.style.color = '#d4af37'; // Green for success
+                input.style.color = '#d4af37'; // Gold for success
 
                 // Scroll to reward if needed
                 setTimeout(() => {
                     document.getElementById('reward-area').scrollIntoView({ behavior: 'smooth' });
+                    playPoem();
                 }, 100);
             }
+        }
+
+        function playPoem() {
+            const container = document.getElementById('poem-container');
+            container.innerHTML = ''; // Clear just in case
+
+            poemLines.forEach((line, index) => {
+                const el = document.createElement('div');
+                el.className = 'verse';
+                el.innerHTML = line; // innerHTML to handle <br>
+                container.appendChild(el);
+
+                // Staggered reveal
+                setTimeout(() => {
+                    el.classList.add('visible');
+                    // Scroll if needed
+                    el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }, index * 800);
+            });
+
+            // Show image after all lines (plus a small buffer)
+            setTimeout(() => {
+                const img = document.querySelector('.ducoup-img');
+                img.classList.add('visible');
+                img.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, poemLines.length * 800 + 500);
         }
     </script>
 </body>
