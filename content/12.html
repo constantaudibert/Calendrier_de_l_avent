@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>12 Décembre - Mi-parcours</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Satisfy&display=swap');
+
+        body {
+            background-color: #fdfbf7;
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #5a3e2b;
+        }
+
+        .container {
+            text-align: center;
+            max-width: 600px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid #d4af37;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.2);
+        }
+
+        h1 {
+            font-family: 'Satisfy', cursive;
+            color: #d4af37;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        .riddle-box {
+            font-size: 1.2em;
+            margin: 20px 0;
+            line-height: 1.6;
+        }
+
+        input[type="text"] {
+            border: none;
+            border-bottom: 2px solid #d4af37;
+            background: transparent;
+            font-family: 'Satisfy', cursive;
+            font-size: 1.2em;
+            color: #d4af37;
+            text-align: center;
+            width: 100px;
+            outline: none;
+            transition: width 0.3s;
+        }
+
+        input[type="text"]:focus {
+            width: 120px;
+        }
+
+        .hidden-content {
+            display: none;
+            margin-top: 30px;
+            animation: fadeIn 1s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .ducoup-img {
+            width: 200px;
+            border-radius: 50%;
+            border: 4px solid #d4af37;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .poem {
+            font-family: 'Satisfy', cursive;
+            font-size: 1.3em;
+            color: #d4af37;
+            white-space: pre-line;
+            text-shadow: 1px 1px 0px rgba(255, 255, 255, 1);
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 10px 20px;
+            background: #d4af37;
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: bold;
+            transition: transform 0.2s, background 0.2s;
+        }
+
+        .back-btn:hover {
+            transform: scale(1.05);
+            background: #bfa030;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>Mi-parcours</h1>
+
+        <div class="riddle-box" id="riddle-area">
+            "Aujourd'hui je n'étais pas vraiment inspiré <input type="text" id="word-input" placeholder=""
+                oninput="checkWord()">, j'ai demandé conseil à une grande oratrice."
+        </div>
+
+        <div id="reward-area" class="hidden-content">
+            <div class="poem">
+                Du coup, je t'écris ces quelques mots,
+                Une case de plus, pour chasser les maux.
+                Du coup, aujourd'hui c'est un poème,
+                pour te dire combien je t'aime.
+                Du coup, mon amour pour toi dépasse l'infini,
+                sans limite, il est indéfini,
+                Du coup, je peine à le décrire,
+                je ne cesse de te le dire,
+                Du coup, je t'aime plus que tout,
+                beaucoup, beaucoup, beaucoup,
+                12/24 pour le calendrier,
+                Du coup, c'est déjà à la moitié,
+                2025 bientôt du passé, 2026 sera une meilleure année.
+
+                Avec l'aide de ma très chère muse
+            </div>
+            <img src="images/madame_ducoup.jpeg" alt="Madame Ducoup" class="ducoup-img">
+        </div>
+
+        <a href="index.html" class="back-btn">Retour au Calendrier</a>
+    </div>
+
+    <script>
+        function checkWord() {
+            const input = document.getElementById('word-input');
+            const val = input.value.toLowerCase().trim();
+
+            // Check for variations just in case
+            if (val === 'ducoup' || val === 'du coup') {
+                document.getElementById('reward-area').style.display = 'block';
+                input.disabled = true; // Lock input
+                input.style.color = '#d4af37'; // Green for success
+
+                // Scroll to reward if needed
+                setTimeout(() => {
+                    document.getElementById('reward-area').scrollIntoView({ behavior: 'smooth' });
+                }, 100);
+            }
+        }
+    </script>
+</body>
+
+</html>
