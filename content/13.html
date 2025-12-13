@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>13 Décembre - 100% Logique</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Satisfy&display=swap"
+        rel="stylesheet">
+    <style>
+        #logic-game-container {
+            /* Background removed to be transparent/white like the modal */
+            background: none;
+            color: #333333;
+            font-family: 'Montserrat', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100%;
+            width: 100%;
+            margin: 0;
+            overflow: hidden;
+            position: relative;
+            border-radius: 10px;
+        }
+
+        .container {
+            text-align: center;
+            max-width: 700px;
+            width: 95%;
+            padding: 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* LIGHTING EFFECTS - Adjusted for light background */
+        .spotlight {
+            position: absolute;
+            top: -50%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(212, 175, 55, 0.1) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 1;
+            animation: pulseLight 4s infinite alternate;
+        }
+
+        @keyframes pulseLight {
+            0% {
+                opacity: 0.5;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        /* INTRO PHASE */
+        #intro-phase {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            animation: zoomIn 0.8s ease-out;
+        }
+
+        .logo-title {
+            font-family: 'Satisfy', cursive;
+            color: #d4af37;
+            font-size: 3.5em;
+            margin: 0 0 20px 0;
+            text-shadow: 0 0 20px rgba(212, 175, 55, 0.8);
+            letter-spacing: 2px;
+        }
+
+        .presenter-container {
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        .presenter-img {
+            width: 250px;
+            border-radius: 20px;
+            border: 4px solid #d4af37;
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.6);
+            transition: transform 0.5s ease;
+        }
+
+        .presenter-img:hover {
+            transform: scale(1.05);
+        }
+
+        .start-btn {
+            background: linear-gradient(135deg, #d4af37, #f39c12);
+            border: none;
+            padding: 15px 40px;
+            color: #000;
+            font-size: 1.5em;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(243, 156, 18, 0.6);
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            animation: bounce 2s infinite;
+        }
+
+        .start-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 30px rgba(243, 156, 18, 1);
+        }
+
+        /* GAME PHASE */
+        #game-phase {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+
+        .timer-bar-container {
+            width: 100%;
+            height: 20px;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            margin-bottom: 30px;
+            overflow: hidden;
+            border: 1px solid #d4af37;
+            box-shadow: 0 0 10px #d4af37;
+        }
+
+        .timer-bar {
+            height: 100%;
+            width: 100%;
+            background: linear-gradient(90deg, #2ecc71, #f1c40f, #e74c3c);
+            transform-origin: left;
+            transition: width 1s linear;
+        }
+
+        .question-box {
+            background: none;
+            border: 2px solid #d4af37;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            width: 100%;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            font-size: 1.3em;
+            line-height: 1.5;
+            position: relative;
+        }
+
+        .question-text {
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .input-area {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            width: 100%;
+        }
+
+        input[type="text"] {
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #d4af37;
+            background: rgba(255, 255, 255, 0.9);
+            color: #000;
+            font-size: 1.2em;
+            text-align: center;
+            flex-grow: 1;
+            max-width: 200px;
+            outline: none;
+        }
+
+        .validate-btn {
+            padding: 15px 25px;
+            border-radius: 10px;
+            background: #d4af37;
+            border: none;
+            color: #000;
+            font-weight: bold;
+            font-size: 1.1em;
+            cursor: pointer;
+        }
+
+        /* SUSPENSE PHASE */
+        #suspense-phase {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 300px;
+        }
+
+        .loader-container {
+            position: relative;
+            width: 150px;
+            height: 150px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .loader {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            box-sizing: border-box;
+            border: 8px solid rgba(212, 175, 55, 0.3);
+            border-top: 8px solid #d4af37;
+            border-radius: 50%;
+            animation: spin 1.5s linear infinite;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+        }
+
+        .loader-logo {
+            width: 70%;
+            height: auto;
+            animation: pulse 2s infinite alternate;
+        }
+
+        .suspense-text {
+            font-size: 2em;
+            color: #d4af37;
+            font-family: 'Satisfy', cursive;
+            animation: pulse 1s infinite alternate;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes pulse {
+            from {
+                opacity: 0.6;
+                transform: scale(0.95);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* FEEDBACK PHASE */
+        #feedback-phase {
+            display: none;
+            text-align: center;
+            animation: fadeIn 0.5s;
+        }
+
+        .result-title {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-family: 'Satisfy', cursive;
+        }
+
+        .success {
+            color: #d4af37;
+            text-shadow: 0 0 20px rgba(212, 175, 55, 0.8);
+        }
+
+        .failure {
+            color: #d4af37;
+            text-shadow: 0 0 10px #e74c3c;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 30px;
+            color: rgba(0, 0, 0, 0.6);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .back-link:hover {
+            color: #d4af37;
+        }
+
+        @keyframes bounce {
+
+            0%,
+            20%,
+            50%,
+            80%,
+            100% {
+                transform: translateY(0);
+            }
+
+            40% {
+                transform: translateY(-10px);
+            }
+
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+
+        @keyframes zoomIn {
+            from {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="logic-game-container">
+        <div class="spotlight"></div>
+
+        <div class="container">
+
+            <!-- PHASE 1: INTRO / GENERIC -->
+            <div id="intro-phase">
+                <h1 class="logo-title">100% Logique</h1>
+                <div class="presenter-container">
+                    <img src="images/presentateur.png" alt="présentateur" class="presenter-img">
+                </div>
+                <p style="font-style:italic; opacity: 0.8; margin-bottom: 20px;">Le générique retentit... Prête pour la
+                    question ?</p>
+                <button class="start-btn" onclick="startQuestion()">Je suis prête !</button>
+            </div>
+
+            <!-- PHASE 2: GAME / CHRONO -->
+            <div id="game-phase">
+                <h2 style="color: #d4af37; margin-bottom: 10px;">La réponse est sous tes yeux !</h2>
+
+                <div class="timer-bar-container">
+                    <div class="timer-bar" id="timer-bar"></div>
+                </div>
+
+                <div class="question-box">
+                    <div class="question-text">
+                        Quel nombre complète cette suite logique ?
+                    </div>
+                    <div style="font-size: 2em; letter-spacing: 5px; color: #f1c40f; margin: 20px 0;">
+                        1 1 2 3 5 8 ...
+                    </div>
+                </div>
+
+                <div class="input-area">
+                    <input type="text" id="answer-input" placeholder="?" autocomplete="off"
+                        onkeypress="handleEnter(event)">
+                    <button class="validate-btn" onclick="checkAnswer()">Valider</button>
+                </div>
+            </div>
+
+            <!-- PHASE 2.5: SUSPENSE / VERDICT -->
+            <div id="suspense-phase">
+                <div class="loader-container">
+                    <div class="loader"></div>
+                    <img src="images/logo_logique.png" alt="Logo Logique" class="loader-logo">
+                </div>
+                <div class="suspense-text">Vérification...</div>
+            </div>
+
+            <!-- PHASE 3: FEEDBACK -->
+            <div id="feedback-phase">
+                <h2 id="result-title" class="result-title"></h2>
+                <p id="result-message" style="font-size: 1.4em; line-height: 1.6; color: #d4af37; font-weight: bold;">
+                </p>
+                <div style="margin-top: 20px;">
+                    <a href="index.html" class="start-btn"
+                        style="padding: 10px 20px; font-size: 1em; text-decoration: none; display: inline-block;">Retour
+                        au
+                        Calendrier</a>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- AUDIO FILES -->
+        <audio id="audio-generic" src="images/generique_logique.mp3" preload="auto"></audio>
+        <audio id="audio-20sec" src="images/20sec.mp3" preload="auto"></audio>
+        <audio id="audio-verdict" src="images/verdict.mp3" preload="auto"></audio>
+        <!-- Removed victory sound as requested -->
+
+    </div> <!-- End of logic-game-container -->
+
+    <script>
+        const audioGeneric = document.getElementById('audio-generic');
+        const audio20sec = document.getElementById('audio-20sec');
+        const audioVerdict = document.getElementById('audio-verdict');
+        // const audioVictoire = document.getElementById('audio-victoire'); // Not used anymore
+
+        const introPhase = document.getElementById('intro-phase');
+        const gamePhase = document.getElementById('game-phase');
+        const suspensePhase = document.getElementById('suspense-phase');
+        const feedbackPhase = document.getElementById('feedback-phase');
+        const timerBar = document.getElementById('timer-bar');
+
+        let timerInterval;
+        let timeLeft = 20;
+        let userHasAnswered = false;
+        let userIsCorrect = false;
+
+        // Autoplay generic immediately
+        if (audioGeneric) {
+            audioGeneric.volume = 0.5;
+            audioGeneric.play().catch(e => {
+                console.log("Autoplay blocked, waiting for user interaction");
+            });
+        }
+
+        function startQuestion() {
+            // Stop generic (fade out)
+            fadeAudioOut(audioGeneric);
+
+            // Switch UI
+            introPhase.style.display = 'none';
+            gamePhase.style.display = 'flex';
+
+            // Start 20s audio
+            audio20sec.currentTime = 0;
+            audio20sec.play();
+
+            // Focus input
+            document.getElementById('answer-input').focus();
+
+            // Start Timer logic
+            const totalDuration = 20000;
+            const startTime = Date.now();
+            userHasAnswered = false;
+            userIsCorrect = false;
+
+            // Reset inputs
+            const inputEl = document.getElementById('answer-input');
+            const btnEl = document.querySelector('.validate-btn');
+            inputEl.value = '';
+            inputEl.disabled = false;
+            btnEl.disabled = false;
+            btnEl.textContent = 'Valider';
+            btnEl.style.background = '#d4af37';
+            btnEl.style.cursor = 'pointer';
+
+            timerInterval = setInterval(() => {
+                const elapsed = Date.now() - startTime;
+                const remaining = totalDuration - elapsed;
+
+                if (remaining <= 0) {
+                    clearInterval(timerInterval);
+                    timerBar.style.width = '0%';
+                    handleEndOfTimer();
+                } else {
+                    const percentage = (remaining / totalDuration) * 100;
+                    timerBar.style.width = percentage + '%';
+
+                    if (percentage < 30) {
+                        timerBar.style.background = '#e74c3c';
+                    } else if (percentage < 60) {
+                        timerBar.style.background = '#f39c12';
+                    }
+                }
+            }, 50);
+        }
+
+        function fadeAudioOut(audio) {
+            const fadeAudio = setInterval(function () {
+                if (audio.volume > 0.1) {
+                    audio.volume -= 0.1;
+                } else {
+                    clearInterval(fadeAudio);
+                    audio.pause();
+                    audio.currentTime = 0;
+                }
+            }, 100);
+        }
+
+        function stopAllAudio() {
+            audioGeneric.pause();
+            audio20sec.pause();
+            audio20sec.currentTime = 0;
+            clearInterval(timerInterval);
+        }
+
+        function handleEnter(e) {
+            if (e.key === 'Enter') checkAnswer();
+        }
+
+        function checkAnswer() {
+            // Do NOT stop audio yet, wait for timer
+            const answer = document.getElementById('answer-input').value.toLowerCase().trim();
+            const validAttributes = ['13', 'treize'];
+
+            userHasAnswered = true;
+            userIsCorrect = validAttributes.includes(answer);
+
+            // Visual feedback that answer is locked
+            const inputEl = document.getElementById('answer-input');
+            const btnEl = document.querySelector('.validate-btn');
+
+            inputEl.disabled = true;
+            btnEl.disabled = true;
+            btnEl.textContent = 'Réponse enregistrée';
+            btnEl.style.background = '#7f8c8d';
+            btnEl.style.cursor = 'default';
+        }
+
+        function handleEndOfTimer() {
+            stopAllAudio(); // Now we stop the 20sec music
+            startVerdict(userIsCorrect);
+        }
+
+        function startVerdict(isSuccess) {
+            // Hide game, show suspense
+            gamePhase.style.display = 'none';
+            suspensePhase.style.display = 'flex';
+
+            // Play verdict sound
+            audioVerdict.currentTime = 0;
+            audioVerdict.play();
+
+            // Wait 8.4 seconds as requested
+            setTimeout(() => {
+                showFeedback(isSuccess);
+            }, 8400);
+        }
+
+        function showFeedback(isSuccess) {
+            suspensePhase.style.display = 'none';
+            // No sound played here
+
+            if (isSuccess) {
+                showResult("Gagné !", "Bravo ! C'est la bonne réponse (13).<br>C'est la suite de Fibonacci : chaque nombre est la somme des deux précédents.", true);
+            } else {
+                showResult("Tu es éliminé", "Ce n'est pas la bonne réponse.<br>La logique était la suite de Fibonacci : 5+8 = 13.", false);
+            }
+        }
+
+
+
+        function showResult(title, message, isSuccess) {
+            gamePhase.style.display = 'none';
+            feedbackPhase.style.display = 'block';
+
+            const titleEl = document.getElementById('result-title');
+            titleEl.textContent = title;
+            titleEl.className = 'result-title ' + (isSuccess ? 'success' : 'failure');
+
+            document.getElementById('result-message').innerHTML = message;
+        }
+
+    </script>
+</body>
+
+</html>
