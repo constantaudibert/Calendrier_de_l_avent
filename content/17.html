@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>17 Décembre - Statistiques Maman</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Satisfy&display=swap"
+        rel="stylesheet">
+    <!-- Chart.js included in index.html -->
+    <style>
+        .stats-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 700px;
+            /* Wider for charts */
+            margin: 0 auto;
+            color: #333;
+            overflow-y: auto;
+            max-height: 80vh;
+            /* Scrollable if needed */
+            padding-right: 10px;
+            /* Space for scrollbar */
+        }
+
+        /* Custom Scrollbar for webkit */
+        .stats-wrapper::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .stats-wrapper::-webkit-scrollbar-thumb {
+            background-color: #d4af37;
+            border-radius: 4px;
+        }
+
+        .stats-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .stats-header h1 {
+            font-family: 'Satisfy', cursive;
+            color: #d4af37;
+            font-size: 2.2em;
+            margin: 10px 0;
+            text-shadow: 0 0 5px rgba(212, 175, 55, 0.3);
+        }
+
+        .stats-header p {
+            font-family: 'Montserrat', sans-serif;
+            color: #777;
+            font-size: 0.9em;
+            margin: 0;
+        }
+
+        .chart-container {
+            width: 100%;
+            background: #fff;
+            border: 2px solid #d4af37;
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            position: relative;
+        }
+
+        .chart-container h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.1em;
+            color: #d4af37;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 0;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        /* Interpretation Text Styles */
+        .interp-text {
+            font-family: 'Montserrat', sans-serif;
+            font-style: italic;
+            color: #555;
+            font-size: 0.95em;
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-left: 3px solid #d4af37;
+            text-align: left;
+            line-height: 1.5;
+        }
+
+        /* Canvas needs relative position container */
+        .canvas-holder {
+            position: relative;
+            height: 250px;
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="stats-wrapper">
+        <div class="stats-header">
+            <h1>L'Analyse Officielle</h1>
+            <p>Données certifiées par l'Institut des Meilleures Mamans</p>
+        </div>
+
+        <!-- Graphique 1 : Camembert -->
+        <div class="chart-container">
+            <h2>Composition du Cœur</h2>
+            <div class="canvas-holder">
+                <canvas id="chartHeart"></canvas>
+            </div>
+            <p class="interp-text">
+                <strong>Analyse :</strong> Les résultats démontrent une grande part d'amour, mais aussi une zone
+                "Inquiétude" qui s'active dangereusement (surtout quand il n'y a pas de nouvelles après 2 jours !). La
+                "Patience", elle, reste héroïque.
+            </p>
+        </div>
+
+        <!-- Graphique 2 : Radar -->
+        <div class="chart-container">
+            <h2>Compétences Techniques</h2>
+            <div class="canvas-holder">
+                <canvas id="chartSkills"></canvas>
+            </div>
+            <p class="interp-text">
+                <strong>Analyse :</strong> Le sujet atteint le niveau "Expert Absolu" dans toutes les catégories. Une
+                capacité d'organisation qui force l'admiration et une tendresse à toute épreuve : c'est simple, tu es la
+                meilleure !
+            </p>
+        </div>
+
+        <!-- Graphique 3 : Line -->
+        <div class="chart-container" style="margin-bottom: 50px;">
+            <h2>Réserve d'Amour</h2>
+            <div class="canvas-holder">
+                <canvas id="chartLove"></canvas>
+            </div>
+            <p class="interp-text">
+                <strong>Analyse :</strong> C'est scientifiquement confirmé : la courbe est constante car elle a atteint
+                son maximum <em>dès la première seconde</em>. Ton amour a toujours été infini, dès la naissance, et le
+                restera pour l'éternité.
+            </p>
+        </div>
+
+    </div>
+
+    <script>
+        // Configuration globale des couleurs
+        Chart.defaults.font.family = "'Montserrat', sans-serif";
+        Chart.defaults.color = '#555';
+
+        const goldOp = 'rgba(212, 175, 55, 0.2)';
+        const goldSolid = '#d4af37';
+        const goldDark = '#bfa13f';
+
+        // 1. CHART HEART (Pie)
+        const ctxHeart = document.getElementById('chartHeart').getContext('2d');
+        new Chart(ctxHeart, {
+            type: 'doughnut',
+            data: {
+                labels: ['Amour pour Nous', 'Patience', 'Inquiétude (inutile)', 'Recettes secrètes'],
+                datasets: [{
+                    data: [45, 20, 25, 10],
+                    backgroundColor: [
+                        '#d4af37', // Gold
+                        '#f1c40f', // Bright Yellow
+                        '#e67e22', // Orange/Bronze
+                        '#f39c12'  // Dark Yellow
+                    ],
+                    borderColor: '#fff',
+                    borderWidth: 2,
+                    hoverOffset: 10
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { padding: 20 }
+                    }
+                },
+                animation: {
+                    animateScale: true,
+                    animateRotate: true
+                }
+            }
+        });
+
+        // 2. CHART SKILLS (Radar)
+        const ctxSkills = document.getElementById('chartSkills').getContext('2d');
+        new Chart(ctxSkills, {
+            type: 'radar',
+            data: {
+                labels: ['Câlins', 'Organisation', 'Cuisine', 'Ecoute', 'Humour', 'Patience'],
+                datasets: [{
+                    label: 'Niveau de Maîtrise (%)',
+                    data: [100, 95, 100, 100, 90, 98],
+                    fill: true,
+                    backgroundColor: goldOp,
+                    borderColor: goldSolid,
+                    pointBackgroundColor: goldSolid,
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: goldSolid
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    r: {
+                        angleLines: { color: '#eee' },
+                        grid: { color: '#eee' },
+                        pointLabels: {
+                            font: { size: 12, weight: 'bold' },
+                            color: '#333'
+                        },
+                        suggestedMin: 50,
+                        suggestedMax: 100
+                    }
+                },
+                plugins: {
+                    legend: { display: false }
+                }
+            }
+        });
+
+        // 3. CHART LOVE (Exponential Line)
+        const ctxLove = document.getElementById('chartLove').getContext('2d');
+        new Chart(ctxLove, {
+            type: 'line',
+            data: {
+                labels: ['Naissance', 'Pour toute la vie'],
+                datasets: [{
+                    label: 'Quantité d\'Amour (Unités Maternelles)',
+                    data: [999999999999, 999999999999], // Amour infini constant
+                    fill: true,
+                    borderColor: goldSolid,
+                    backgroundColor: (context) => {
+                        const ctx = context.chart.ctx;
+                        const gradient = ctx.createLinearGradient(0, 0, 0, 250);
+                        gradient.addColorStop(0, goldOp);
+                        gradient.addColorStop(1, 'rgba(255,255,255,0)');
+                        return gradient;
+                    },
+                    tension: 0.5, // Très courbé
+                    pointRadius: 6,
+                    pointHoverRadius: 10
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        display: false // On cache les chiffres pour le côté "incommensurable"
+                    },
+                    x: {
+                        grid: { display: false }
+                    }
+                },
+                plugins: {
+                    legend: { display: true },
+                    tooltip: {
+                        callbacks: {
+                            label: function (context) {
+                                return context.raw + ' ❤️';
+                            }
+                        }
+                    }
+                },
+                animation: {
+                    y: {
+                        duration: 2500,
+                        easing: 'easeInQuad' // Accélération
+                    }
+                }
+            }
+        });
+
+    </script>
+</body>
+
+</html>
