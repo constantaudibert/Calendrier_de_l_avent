@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>18 Décembre - Le Flocon Majestueux</title>
+    <style>
+        .snowflake-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, #fff 0%, #f0f0f0 100%);
+            overflow: hidden;
+            font-family: 'Montserrat', sans-serif;
+            position: relative;
+        }
+
+        .sf-header {
+            position: absolute;
+            top: 20px;
+            text-align: center;
+            z-index: 10;
+        }
+
+        .sf-header h1 {
+            font-family: 'Satisfy', cursive;
+            color: #5dade2;
+            /* Icy Blue */
+            font-size: 2.2em;
+            margin: 0;
+            text-shadow: 0 0 10px rgba(169, 223, 245, 0.8);
+        }
+
+        .sf-container {
+            position: relative;
+            width: 80vmin;
+            height: 80vmin;
+            max-width: 400px;
+            max-height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            filter: drop-shadow(0 0 5px rgba(135, 206, 250, 0.5));
+            animation: float 6s ease-in-out infinite alternate;
+        }
+
+        svg {
+            width: 100%;
+            height: 100%;
+            overflow: visible;
+        }
+
+        .branch {
+            stroke: #AED6F1;
+            /* Light Blue */
+            stroke-width: 2;
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            /* transform-origin removed to let SVG handle rotation around (0,0) */
+            transition: all 0.5s ease;
+        }
+
+        /* Animation de rotation continue majestueuse */
+        .rotating-group {
+            transform-origin: center;
+            animation: rotate majestic 30s linear infinite;
+        }
+
+        @keyframes rotate {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes float {
+            from {
+                transform: translateY(0px) scale(1);
+            }
+
+            to {
+                transform: translateY(-10px) scale(1.02);
+            }
+        }
+
+        .center-gem {
+            fill: url(#blueGradient);
+            filter: drop-shadow(0 0 10px rgba(93, 173, 226, 0.8));
+            cursor: pointer;
+            transition: transform 0.3s;
+            animation: pulse-gem 2s infinite;
+        }
+
+        @keyframes pulse-gem {
+            0% {
+                r: 10;
+                filter: drop-shadow(0 0 5px rgba(93, 173, 226, 0.5));
+            }
+
+            50% {
+                r: 12;
+                filter: drop-shadow(0 0 15px rgba(135, 206, 250, 1));
+            }
+
+            100% {
+                r: 10;
+                filter: drop-shadow(0 0 5px rgba(93, 173, 226, 0.5));
+            }
+        }
+
+        .center-gem:hover {
+            transform: scale(1.2) rotate(180deg);
+        }
+
+        .sf-footer {
+            position: absolute;
+            bottom: 5%;
+            /* Remonte/descend en % pour s'adapter */
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            width: 90%;
+            z-index: 1001;
+        }
+
+        .sf-footer p {
+            font-family: 'Satisfy', cursive;
+            color: #D4AF37;
+            /* Doré */
+            font-size: 1.8em;
+            margin: 0;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+            min-height: 1.8em;
+            /* Prevent layout shift */
+        }
+
+        /* Ajustement si le flocon est trop grand sur petits écrans */
+        @media (max-width: 600px) {
+            .sf-container {
+                width: 70vmin;
+                height: 70vmin;
+                margin-bottom: 60px;
+                /* Espace pour le texte */
+            }
+
+            .sf-footer p {
+                font-size: 1.4em;
+            }
+        }
+
+        .heavy-snow {
+            position: absolute;
+            top: -20px;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 0 0 5px #fff;
+            pointer-events: none;
+            animation: fall linear forwards;
+            z-index: 1000;
+        }
+
+        @keyframes fall {
+            from {
+                transform: translateY(0);
+            }
+
+            to {
+                transform: translateY(110vh);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="snowflake-wrapper">
+        <div class="sf-header">
+            <h1>Unique</h1>
+        </div>
+
+        <div class="sf-container">
+            <svg viewBox="-150 -150 300 300" id="sf-svg">
+                <defs>
+                    <linearGradient id="blueGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#2980b9" />
+                        <stop offset="50%" stop-color="#85c1e9" />
+                        <stop offset="100%" stop-color="#1a5276" />
+                    </linearGradient>
+                    <filter id="glow">
+                        <feGaussianBlur stdDeviation="2.5" result="coloredBlur" />
+                        <feMerge>
+                            <feMergeNode in="coloredBlur" />
+                            <feMergeNode in="SourceGraphic" />
+                        </feMerge>
+                    </filter>
+                </defs>
+
+                <g class="rotating-group" id="branches-group">
+                    <!-- Branches will be generated here -->
+                </g>
+
+                <!-- Center Decoration -->
+                <circle cx="0" cy="0" r="10" class="center-gem" onclick="triggerSnowfall()" />
+            </svg>
+        </div>
+
+        <div class="sf-footer">
+            <p id="final-message"></p>
+        </div>
+    </div>
+
+    <script>
+        const svgGroup = document.getElementById('branches-group');
+        const NUM_BRANCHES = 18;
+        const RADIUS = 140;
+
+        function createBranchPath() {
+            // Un path de branche complexe et "féérique"
+            // Ligne centrale + sous-branches
+            let d = "";
+
+            // Tronc principal
+            d += "M 0,0 L 0,-" + RADIUS;
+
+            // Sous-branches (V shapes)
+            // Niveau 1 (proche centre)
+            d += " M 0,-30 L -10,-45 M 0,-30 L 10,-45";
+
+            // Niveau 2 (milieu)
+            d += " M 0,-60 L -20,-80 M -20,-80 L -15,-90"; // petit détail bout
+            d += " M 0,-60 L 20,-80 M 20,-80 L 15,-90";
+
+            // Niveau 3 (loin)
+            d += " M 0,-100 L -15,-115";
+            d += " M 0,-100 L 15,-115";
+
+            // Pointe detail
+            d += " M 0,-125 L -5,-135 M 0,-125 L 5,-135";
+
+            // Formes diamant sur le tronc
+            d += " M 0,-45 L -5,-50 L 0,-55 L 5,-50 Z";
+
+            return d;
+        }
+
+        const branchD = createBranchPath();
+
+        for (let i = 0; i < NUM_BRANCHES; i++) {
+            const angle = (360 / NUM_BRANCHES) * i;
+            const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+            path.setAttribute("d", branchD);
+            path.setAttribute("class", "branch");
+            path.setAttribute("transform", `rotate(${angle})`);
+
+            // Opacity variation for depth if wanted, but strict gold is cleaner
+            // path.style.opacity = i % 2 === 0 ? 1 : 0.8;
+
+            svgGroup.appendChild(path);
+        }
+
+        // Sparkle Effect
+        window.triggerSnowfall = function () {
+            const wrapper = document.querySelector('.snowflake-wrapper');
+
+            // Sound
+            const audio = new Audio('images/let_it_snow.mp3');
+            audio.volume = 0.3;
+
+            // Typing animation of the message
+            const text = "Comme ce flocon, tu es une merveille unique au monde.";
+            const msgElement = document.getElementById('final-message');
+            msgElement.innerHTML = "";
+            let charIndex = 0;
+            function typeWriter() {
+                if (charIndex < text.length) {
+                    msgElement.innerHTML += text.charAt(charIndex);
+                    charIndex++;
+                    setTimeout(typeWriter, 50); // Speed of typing
+                }
+            }
+            typeWriter();
+
+            // Heavy snowfall generation
+            const interval = setInterval(() => {
+                // Create multiple flakes at once for "invasion" effect
+                for (let k = 0; k < 5; k++) {
+                    const flake = document.createElement('div');
+                    flake.classList.add('heavy-snow');
+
+                    flake.style.left = Math.random() * 100 + 'vw';
+                    flake.style.width = (Math.random() * 5 + 3) + 'px';
+                    flake.style.height = flake.style.width;
+                    flake.style.opacity = Math.random() * 0.7 + 0.3;
+
+                    const duration = Math.random() * 3 + 2;
+                    flake.style.animationDuration = duration + 's';
+
+                    wrapper.appendChild(flake);
+
+                    setTimeout(() => flake.remove(), duration * 1000);
+                }
+            }, 50);
+
+            // Stop snow when music ends
+            audio.onended = () => clearInterval(interval);
+
+            // Play audio
+            audio.play().catch(() => {
+                // Fallback if audio fails: ~124 seconds (1min 64s)
+                setTimeout(() => clearInterval(interval), 124000);
+            });
+        };
+
+        // Auto sparkle occasionally
+        setInterval(() => {
+            if (Math.random() > 0.7) {
+                const p = document.querySelector('.branch');
+                // Could add specific small twinkle but CSS animation covers rotation
+            }
+        }, 1000);
+
+    </script>
+</body>
+
+</html>
