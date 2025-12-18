@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>19 Décembre - Journée Mondiale</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Satisfy&display=swap');
+
+        body {
+            margin: 0;
+            padding: 0;
+            /* height: 100vh; */
+            /* Removed as centering is handled by wrapper */
+            /* display: flex; */
+            /* Removed as centering is handled by wrapper */
+            /* justify-content: center; */
+            /* Removed as centering is handled by wrapper */
+            /* align-items: center; */
+            /* Removed as centering is handled by wrapper */
+            background-color: #f0f0f0;
+            font-family: 'Montserrat', sans-serif;
+            overflow: hidden;
+        }
+
+        /* Wrapper to replace body centering since this is injected content */
+        .day19-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 500px;
+            /* Ensure enough height for vertical centering */
+            width: 100%;
+        }
+
+        .container {
+            position: relative;
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 90%;
+            width: 500px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: auto;
+            /* Safety centering */
+        }
+
+        h1 {
+            font-family: 'Satisfy', cursive;
+            color: #c0392b;
+            font-size: 3em;
+            margin-bottom: 30px;
+            margin-top: 0;
+        }
+
+        p {
+            color: #2c3e50;
+            font-size: 1.3em;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        input {
+            border: none;
+            border-bottom: 2px solid #c0392b;
+            font-size: 1em;
+            font-family: 'Montserrat', sans-serif;
+            width: 100px;
+            text-align: center;
+            outline: none;
+            color: #c0392b;
+            font-weight: bold;
+            background: transparent;
+            vertical-align: middle;
+            /* Align with text */
+            margin: 0 5px;
+        }
+
+        .btn-pull {
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 2em;
+            /* Bigger emoji */
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(39, 174, 96, 0.4);
+            transition: all 0.3s ease;
+            margin-top: 20px;
+            display: none;
+            /* Caché au départ */
+            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            line-height: 1;
+        }
+
+        @keyframes popIn {
+            from {
+                transform: scale(0);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .btn-pull:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(39, 174, 96, 0.6);
+            background-color: #2ecc71;
+        }
+
+        .reveal-area {
+            margin-top: 20px;
+            perspective: 1000px;
+            height: 0;
+            overflow: hidden;
+            transition: height 0.5s ease;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+
+        .reveal-area.active {
+            height: auto;
+            min-height: 350px;
+        }
+
+        .pull-img {
+            max-width: 100%;
+            max-height: 350px;
+            border-radius: 10px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            transform: rotateX(90deg);
+            opacity: 0;
+            transition: all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            border: 5px solid #fff;
+        }
+
+        .pull-img.show {
+            transform: rotateX(0deg);
+            opacity: 1;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="day19-wrapper">
+        <div class="container">
+            <h1>Journée Mondiale</h1>
+            <p>
+                Comme par le passé, tu devrais tomber sous le charme du monsieur au
+                <input type="text" id="wordInput" autocomplete="off" placeholder="..."> moche
+            </p>
+
+            <button class="btn-pull" id="btnReveal" onclick="revealPull()">
+                🧶
+            </button> <!-- Space for button to prevent layout shift if wanted, but display none is requested -->
+
+            <div class="reveal-area" id="revealArea">
+                <img src="images/pull_moche.png" alt="Le fameux pull moche" class="pull-img" id="pullImg">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const input = document.getElementById('wordInput');
+        const btn = document.getElementById('btnReveal');
+
+        input.addEventListener('input', function () {
+            const val = this.value.toLowerCase().trim();
+            if (val === 'pull') {
+                btn.style.display = 'block';
+                input.style.borderBottomColor = '#27ae60';
+                input.style.color = '#27ae60';
+                input.blur(); // Retire le focus
+            }
+        });
+
+        function revealPull() {
+            const area = document.getElementById('revealArea');
+            const img = document.getElementById('pullImg');
+
+            // Expand area
+            area.classList.add('active');
+
+            // Animate image in after short delay
+            setTimeout(() => {
+                img.classList.add('show');
+                // Confetti
+                createConfetti();
+            }, 100);
+
+            // Play music
+            const audio = new Audio('images/jingle_bells_rock.mp3');
+            audio.volume = 0.5;
+            audio.play().catch(e => console.log("Audio play failed", e));
+
+            // Disable button click to prevent double play but keep text
+            btn.style.pointerEvents = "none";
+            btn.style.opacity = "0.7";
+        }
+
+        function createConfetti() {
+            const colors = ['#c0392b', '#27ae60', '#f1c40f', '#3498db'];
+            for (let i = 0; i < 30; i++) {
+                const c = document.createElement('div');
+                c.style.position = 'fixed';
+                c.style.left = (Math.random() * window.innerWidth) + 'px';
+                c.style.top = '-10px';
+                c.style.width = '10px';
+                c.style.height = '10px';
+                c.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                c.style.zIndex = 9999;
+                document.body.appendChild(c);
+
+                const anim = c.animate([
+                    { transform: 'translateY(0) rotate(0deg)', opacity: 1 },
+                    { transform: `translateY(${window.innerHeight}px) rotate(${Math.random() * 720}deg)`, opacity: 0 }
+                ], {
+                    duration: Math.random() * 2000 + 1500,
+                    easing: 'linear'
+                });
+
+                anim.onfinish = () => c.remove();
+            }
+        }
+    </script>
+</body>
+
+</html>
