@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>100% Logique 2</title>
+    <!-- We don't need to link external CSS if it's injected, but style block is good -->
+    <style>
+        /* Scoped styles mainly, but careful with global overrides */
+        #logic-game-container-20 {
+            background: none;
+            /* Transparent to show modal white background */
+            color: #333333;
+            font-family: 'Montserrat', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100%;
+            width: 100%;
+            margin: 0;
+            overflow: hidden;
+            position: relative;
+            border-radius: 10px;
+        }
+
+        .container-logic {
+            text-align: center;
+            max-width: 700px;
+            width: 95%;
+            padding: 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* LIGHTING EFFECTS */
+        .spotlight {
+            position: absolute;
+            top: -50%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(212, 175, 55, 0.1) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 1;
+            animation: pulseLight 4s infinite alternate;
+        }
+
+        @keyframes pulseLight {
+            0% {
+                opacity: 0.5;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        /* INTRO PHASE */
+        #intro-phase-20 {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            animation: zoomIn 0.8s ease-out;
+        }
+
+        .logo-title {
+            font-family: 'Satisfy', cursive;
+            color: #d4af37;
+            font-size: 3.5em;
+            margin: 0 0 20px 0;
+            text-shadow: 0 0 20px rgba(212, 175, 55, 0.8);
+            letter-spacing: 2px;
+        }
+
+        .presenter-container {
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        .presenter-img {
+            width: 250px;
+            border-radius: 20px;
+            border: 4px solid #d4af37;
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.6);
+            transition: transform 0.5s ease;
+        }
+
+        .presenter-img:hover {
+            transform: scale(1.05);
+        }
+
+        .start-btn {
+            background: linear-gradient(135deg, #d4af37, #f39c12);
+            border: none;
+            padding: 15px 40px;
+            color: #000;
+            font-size: 1.5em;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(243, 156, 18, 0.6);
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            animation: bounce 2s infinite;
+        }
+
+        .start-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 30px rgba(243, 156, 18, 1);
+        }
+
+        /* GAME PHASE */
+        #game-phase-20 {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+
+        .timer-bar-container {
+            width: 100%;
+            height: 20px;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            margin-bottom: 30px;
+            overflow: hidden;
+            border: 1px solid #d4af37;
+            box-shadow: 0 0 10px #d4af37;
+        }
+
+        .timer-bar {
+            height: 100%;
+            width: 100%;
+            background: linear-gradient(90deg, #2ecc71, #f1c40f, #e74c3c);
+            transform-origin: left;
+            transition: width 0.05s linear;
+            /* Smooth update */
+        }
+
+        .question-box {
+            background: none;
+            border: 2px solid #d4af37;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            width: 100%;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            font-size: 1.3em;
+            line-height: 1.5;
+            position: relative;
+        }
+
+        .question-text {
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .input-area {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            width: 100%;
+        }
+
+        input[type="text"] {
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #d4af37;
+            background: rgba(255, 255, 255, 0.9);
+            color: #000;
+            font-size: 1.2em;
+            text-align: center;
+            flex-grow: 1;
+            /* Allow input to grow */
+            max-width: 200px;
+            outline: none;
+            width: auto;
+            /* Override default */
+        }
+
+        .validate-btn {
+            padding: 15px 25px;
+            border-radius: 10px;
+            background: #d4af37;
+            border: none;
+            color: #000;
+            font-weight: bold;
+            font-size: 1.1em;
+            cursor: pointer;
+        }
+
+        /* SUSPENSE PHASE */
+        #suspense-phase-20 {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 300px;
+        }
+
+        .loader-container {
+            position: relative;
+            width: 150px;
+            height: 150px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .loader {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            box-sizing: border-box;
+            border: 8px solid rgba(212, 175, 55, 0.3);
+            border-top: 8px solid #d4af37;
+            border-radius: 50%;
+            animation: spin 1.5s linear infinite;
+        }
+
+        .loader-logo {
+            width: 70%;
+            height: auto;
+            animation: pulse 2s infinite alternate;
+        }
+
+        .suspense-text {
+            font-size: 2em;
+            color: #d4af37;
+            font-family: 'Satisfy', cursive;
+            animation: pulse 1s infinite alternate;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes pulse {
+            from {
+                opacity: 0.6;
+                transform: scale(0.95);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* FEEDBACK PHASE */
+        #feedback-phase-20 {
+            display: none;
+            text-align: center;
+            animation: fadeIn 0.5s;
+        }
+
+        .result-title {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-family: 'Satisfy', cursive;
+        }
+
+        .success {
+            color: #d4af37;
+            text-shadow: 0 0 20px rgba(212, 175, 55, 0.8);
+        }
+
+        .failure {
+            color: #d4af37;
+            text-shadow: 0 0 10px #e74c3c;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 30px;
+            color: rgba(0, 0, 0, 0.6);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .back-link:hover {
+            color: #d4af37;
+        }
+
+        @keyframes bounce {
+
+            0%,
+            20%,
+            50%,
+            80%,
+            100% {
+                transform: translateY(0);
+            }
+
+            40% {
+                transform: translateY(-10px);
+            }
+
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+
+        @keyframes zoomIn {
+            from {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="logic-game-container-20">
+        <div class="spotlight"></div>
+
+        <div class="container-logic">
+
+            <!-- PHASE 1: INTRO / GENERIC -->
+            <div id="intro-phase-20">
+                <h1 class="logo-title">100% Logique 2</h1>
+                <div class="presenter-container">
+                    <img src="images/presentateur.png" alt="présentateur" class="presenter-img">
+                </div>
+                <!-- Updated intro text -->
+                <p style="font-style:italic; opacity: 0.8; margin-bottom: 20px; font-size: 1.1em;">
+                    Le retour tant attendu ! Sauras-tu faire preuve de logique ?
+                </p>
+                <button class="start-btn" onclick="startQuestion20()">C'est parti !</button>
+            </div>
+
+            <!-- PHASE 2: GAME / CHRONO -->
+            <div id="game-phase-20">
+                <h2 style="color: #d4af37; margin-bottom: 10px;">La réponse est sous tes yeux !</h2>
+
+                <div class="timer-bar-container">
+                    <div class="timer-bar" id="timer-bar-20"></div>
+                </div>
+
+                <div class="question-box">
+                    <div class="question-text">
+                        Combien de fois le chiffre <strong>9</strong> s'écrit-il<br>entre 0 et 100 ?
+                    </div>
+                    <!-- No image needed for this mental puzzle -->
+                </div>
+
+                <div class="input-area">
+                    <input type="text" id="answer-input-20" placeholder="?" autocomplete="off"
+                        onkeypress="handleEnter20(event)">
+                    <button class="validate-btn" onclick="checkAnswer20()">Valider</button>
+                </div>
+            </div>
+
+            <!-- PHASE 2.5: SUSPENSE / VERDICT -->
+            <div id="suspense-phase-20">
+                <div class="loader-container">
+                    <div class="loader"></div>
+                    <img src="images/logo_logique.png" alt="Logo Logique" class="loader-logo">
+                </div>
+                <div class="suspense-text">Vérification...</div>
+            </div>
+
+            <!-- PHASE 3: FEEDBACK -->
+            <div id="feedback-phase-20">
+                <h2 id="result-title-20" class="result-title"></h2>
+                <p id="result-message-20"
+                    style="font-size: 1.4em; line-height: 1.6; color: #d4af37; font-weight: bold;">
+                </p>
+
+                <div style="margin-top: 30px;">
+                    <button class="start-btn" onclick="startComic20()">Qui à été éliminé ?</button>
+                </div>
+            </div>
+
+            <!-- PHASE 4: COMIC STRIP -->
+            <div id="comic-phase-20" style="display:none; flex-direction:column; align-items:center;">
+                <h2 class="logo-title" style="font-size:2em;">L'After Show</h2>
+
+                <div class="presenter-container">
+                    <img id="comic-img-20" src="images/presentateur_bulle.png" alt="Séquence BD" class="presenter-img"
+                        style="width: 450px; max-width: 100%;">
+                </div>
+
+                <div style="margin-top: 20px;">
+                    <button class="start-btn" id="next-comic-btn-20" onclick="nextComicStep20()">Suite...</button>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- SCRIPT SCOPED to 20 -->
+    <script>
+        (function () {
+            // Using a closure or just distinct variable names to avoid collision if possible,
+            // though script injection acts globally in some contexts. We'll sufix with 20.
+
+            const audioGeneric20 = new Audio('images/generique_logique.mp3');
+            const audio20sec20 = new Audio('images/20sec.mp3');
+            const audioVerdict20 = new Audio('images/verdict.mp3');
+
+            const introPhase20 = document.getElementById('intro-phase-20');
+            const gamePhase20 = document.getElementById('game-phase-20');
+            const suspensePhase20 = document.getElementById('suspense-phase-20');
+            const feedbackPhase20 = document.getElementById('feedback-phase-20');
+            const comicPhase20 = document.getElementById('comic-phase-20');
+            const timerBar20 = document.getElementById('timer-bar-20');
+
+            let timerInterval20;
+            let userIsCorrect20 = false;
+
+            // Autoplay generic
+            audioGeneric20.volume = 0.5;
+            audioGeneric20.play().catch(() => { });
+
+            // START GAME FUNCTION
+            window.startQuestion20 = function () {
+                // Fade out generic
+                let vol = 0.5;
+                let fade = setInterval(() => {
+                    if (vol > 0.05) {
+                        vol -= 0.05;
+                        audioGeneric20.volume = vol;
+                    } else {
+                        clearInterval(fade);
+                        audioGeneric20.pause();
+                        audioGeneric20.currentTime = 0;
+                    }
+                }, 100);
+
+                // UI Switch
+                introPhase20.style.display = 'none';
+                gamePhase20.style.display = 'flex';
+
+                // Play 20s
+                audio20sec20.currentTime = 0;
+                audio20sec20.play();
+
+                // Focus
+                setTimeout(() => {
+                    const inp = document.getElementById('answer-input-20');
+                    if (inp) inp.focus();
+                }, 100);
+
+                // Timer
+                const duration = 20000;
+                const start = Date.now();
+
+                timerInterval20 = setInterval(() => {
+                    const elapsed = Date.now() - start;
+                    const remaining = duration - elapsed;
+
+                    if (remaining <= 0) {
+                        clearInterval(timerInterval20);
+                        timerBar20.style.width = '0%';
+                        handleEnd20();
+                    } else {
+                        const pct = (remaining / duration) * 100;
+                        timerBar20.style.width = pct + '%';
+                        if (pct < 30) timerBar20.style.background = '#e74c3c';
+                        else if (pct < 60) timerBar20.style.background = '#f39c12';
+                    }
+                }, 50);
+            };
+
+            window.handleEnter20 = function (e) {
+                if (e.key === 'Enter') checkAnswer20();
+            };
+
+            window.checkAnswer20 = function () {
+                const inp = document.getElementById('answer-input-20');
+                const btn = document.querySelector('#game-phase-20 .validate-btn');
+                const val = inp.value.toLowerCase().trim();
+
+                const valid = ['20', 'vingt'];
+                userIsCorrect20 = valid.includes(val);
+
+                // Lock UI
+                inp.disabled = true;
+                btn.disabled = true;
+                btn.textContent = 'Enregistré...';
+                btn.style.background = '#95a5a6';
+            };
+
+            function handleEnd20() {
+                // Stop music
+                audio20sec20.pause();
+                audio20sec20.currentTime = 0;
+
+                // Suspense
+                gamePhase20.style.display = 'none';
+                suspensePhase20.style.display = 'flex';
+
+                // Play verdict sound
+                audioVerdict20.currentTime = 0;
+                audioVerdict20.play();
+
+                setTimeout(() => {
+                    // audioVerdict20.pause(); // Removed to match 13.html logic
+                    showFeedback20();
+                }, 8400); // 8.4s like 13.html
+            }
+
+            function showFeedback20() {
+                // Ensure verdict audio is not stopped abruptly as per 13.html
+                // audioVerdict20.pause(); 
+                // audioVerdict20.currentTime = 0;
+
+                suspensePhase20.style.display = 'none';
+                feedbackPhase20.style.display = 'block';
+
+                const title = document.getElementById('result-title-20');
+                const msg = document.getElementById('result-message-20');
+
+                if (userIsCorrect20) {
+                    title.textContent = "Gagné !";
+                    title.className = "result-title success";
+                    msg.innerHTML = "Bravo ! Le chiffre 20 était bien la réponse.<br>10 fois en unité (9, 19... 99) + 10 fois en dizaine (90..99).";
+                    // Play win sound if available or logic theme finish? logic theme usually relies on presenter voice
+                } else {
+                    title.textContent = "Perdu...";
+                    title.className = "result-title failure";
+                    msg.innerHTML = "La bonne réponse était 20.<br>Il y a 10 unités (9...99) et 10 dizaines (90...99).";
+                }
+            }
+
+            // COMIC STRIP LOGIC
+            const comicImages = [
+                'images/presentateur_bulle.png',
+                'images/madame_ducoup_dialogue.png',
+                'images/presentateur_message.png',
+                'images/madame_ducoup_message.png',
+                'images/presentateur_medaille.png',
+                'images/madame_ducoup_studio.png'
+            ];
+            let currentComicIndex = 0;
+
+            window.startComic20 = function () {
+                feedbackPhase20.style.display = 'none';
+                comicPhase20.style.display = 'flex';
+                // Reset index just in case
+                currentComicIndex = 0;
+                document.getElementById('comic-img-20').src = comicImages[0];
+                document.getElementById('next-comic-btn-20').textContent = "Suite...";
+
+                // Play generic music for the comic
+                audioGeneric20.volume = 0.5;
+                audioGeneric20.currentTime = 0;
+                audioGeneric20.play().catch(() => { });
+            };
+
+            window.nextComicStep20 = function () {
+                currentComicIndex++;
+                const imgEl = document.getElementById('comic-img-20');
+                const btnEl = document.getElementById('next-comic-btn-20');
+
+                if (currentComicIndex < comicImages.length) {
+                    // Preload next image logic technically usually handled by browser
+                    // Smooth transition
+                    imgEl.style.opacity = 0;
+                    setTimeout(() => {
+                        imgEl.src = comicImages[currentComicIndex];
+                        imgEl.onload = () => { imgEl.style.opacity = 1; };
+                    }, 200);
+
+                    // If last image, change button text and link to exit
+                    if (currentComicIndex === comicImages.length - 1) {
+                        // Last image shown. Button should now allow exit or "Fin"
+                        btnEl.textContent = "Fin";
+                        // Keep it simple
+                    }
+                } else {
+                    // Comic finished, maybe just close modal or reload?
+                    // Or go to index?
+                    alert("À demain !");
+                    // Assuming we are in a modal, maybe reload page to close? 
+                    // Or just do nothing.
+                    window.location.reload();
+                }
+            };
+
+        })();
+    </script>
+</body>
+
+</html>
