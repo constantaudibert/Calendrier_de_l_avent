@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>21 Décembre - Souvenirs</title>
+    <style>
+        /* Scoped styles for Day 21 */
+        #memory-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            width: 100%;
+            background: radial-gradient(circle at center, #fdfbf7 0%, #e6dfd1 100%);
+            font-family: 'Montserrat', sans-serif;
+            text-align: center;
+            padding: 10px;
+            box-sizing: border-box;
+            border-radius: 15px;
+        }
+
+        h2 {
+            font-family: 'Satisfy', cursive;
+            color: #8d6e63;
+            margin-bottom: 20px;
+            font-size: 2.2em;
+        }
+
+        /* Memory Grid */
+        .memory-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            max-width: 400px;
+            width: 100%;
+            perspective: 1000px;
+        }
+
+        .memory-card {
+            background-color: transparent;
+            width: 100%;
+            aspect-ratio: 1;
+            /* Square cards */
+            perspective: 1000px;
+            cursor: pointer;
+        }
+
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        .memory-card.flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .card-front,
+        .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+            border-radius: 10px;
+        }
+
+        .card-front {
+            background-color: #d4af37;
+            /* Gold/Back of card */
+            background-image: linear-gradient(135deg, #d4af37 25%, #f1c40f 100%);
+            color: white;
+            transform: rotateY(0deg);
+            /* Explicitly set default */
+        }
+
+        .card-back {
+            background-color: white;
+            transform: rotateY(180deg);
+            border: 2px solid #d4af37;
+        }
+
+        /* Candle Animation for Victory */
+        .candle-container {
+            position: relative;
+            width: 50px;
+            height: 120px;
+            margin: 20px auto;
+        }
+
+        .candle-wax {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(#fffcf0, #fcf4d9);
+            border-radius: 8px;
+            box-shadow: inset -5px 0 10px rgba(0, 0, 0, 0.05);
+            position: relative;
+        }
+
+        .wick {
+            width: 4px;
+            height: 15px;
+            background: #5d4037;
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 2px;
+        }
+
+        .flame {
+            position: absolute;
+            top: -45px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 25px;
+            height: 40px;
+            background: radial-gradient(ellipse at bottom, #ffeb3b 0%, #ff9800 60%, transparent 100%);
+            border-radius: 50% 50% 20% 20%;
+            filter: blur(1px);
+            opacity: 0.9;
+            box-shadow: 0 0 15px #ffeb3b, 0 -15px 30px #ff9800;
+            animation: flicker 3s infinite alternate, flameUp 1s ease-out forwards;
+        }
+
+        @keyframes flicker {
+            0% {
+                transform: translateX(-50%) scale(1) rotate(-1deg);
+                opacity: 0.9;
+            }
+
+            25% {
+                transform: translateX(-50%) scale(1.1) rotate(1deg);
+                opacity: 0.8;
+            }
+
+            50% {
+                transform: translateX(-50%) scale(0.9) rotate(-2deg);
+                opacity: 0.95;
+            }
+
+            75% {
+                transform: translateX(-50%) scale(1.05) rotate(1deg);
+                opacity: 0.85;
+            }
+
+            100% {
+                transform: translateX(-50%) scale(1) rotate(-1deg);
+                opacity: 0.9;
+            }
+        }
+
+        @keyframes flameUp {
+            from {
+                transform: translateX(-50%) scale(0);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(-50%) scale(1);
+                opacity: 0.9;
+            }
+        }
+
+        /* Victory Message */
+        #victory-message {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+            animation: fadeIn 2s ease;
+        }
+
+        .tribute-text {
+            font-family: 'Satisfy', cursive;
+            font-size: 1.5em;
+            color: #5d4037;
+            margin-top: 10px;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="memory-wrapper">
+        <h2 id="game-title">Retrouve les paires...</h2>
+
+        <div class="memory-grid" id="grid-21">
+            <!-- Cards generated by JS -->
+        </div>
+
+        <div id="victory-message">
+            <div class="candle-container">
+                <div class="wick"></div>
+                <div class="candle-wax"></div>
+                <div class="flame"></div>
+            </div>
+
+            <p class="tribute-text">
+                N'oublie jamais,<br>
+                se souvenir, c'est faire vivre... 🕊️
+            </p>
+        </div>
+    </div>
+
+    <script>
+        (function () {
+            const symbols = ['🕊️', '❤️', '✨', '🌸', '👼', '🕯️'];
+            // Duplicate for pairs
+            let cards = [...symbols, ...symbols];
+
+            // Shuffle
+            cards.sort(() => 0.5 - Math.random());
+
+            const grid = document.getElementById('grid-21');
+            const victoryMsg = document.getElementById('victory-message');
+            const title = document.getElementById('game-title');
+
+            let hasFlippedCard = false;
+            let lockBoard = false;
+            let firstCard, secondCard;
+            let pairsFound = 0;
+            const totalPairs = symbols.length;
+
+            // Generate HTML
+            cards.forEach(symbol => {
+                const card = document.createElement('div');
+                card.classList.add('memory-card');
+                card.dataset.symbol = symbol;
+
+                card.innerHTML = `
+                    <div class="card-inner">
+                        <div class="card-front">?</div> <!-- Back of card visual -->
+                        <div class="card-back">${symbol}</div>
+                    </div>
+                `;
+
+                card.addEventListener('click', flipCard);
+                grid.appendChild(card);
+            });
+
+            // Adjust styles: card-front is actually the "back" (cover) in standard terms usually, 
+            // but CSS rotateY logic here: front is visible initially (0deg), back is hidden (180deg).
+            // So card-front is the Cover.
+
+            function flipCard() {
+                if (lockBoard) return;
+                if (this === firstCard) return;
+
+                this.classList.add('flipped');
+
+                if (!hasFlippedCard) {
+                    // First click
+                    hasFlippedCard = true;
+                    firstCard = this;
+                    return;
+                }
+
+                // Second click
+                secondCard = this;
+                checkForMatch();
+            }
+
+            function checkForMatch() {
+                let isMatch = firstCard.dataset.symbol === secondCard.dataset.symbol;
+
+                isMatch ? disableCards() : unflipCards();
+            }
+
+            function disableCards() {
+                firstCard.removeEventListener('click', flipCard);
+                secondCard.removeEventListener('click', flipCard);
+
+                // Play Match Sound
+                new Audio('images/success.mp3').play().catch(() => { });
+
+                // Visual feedback?
+                // firstCard.querySelector('.card-back').style.background = '#e8f5e9';
+                // secondCard.querySelector('.card-back').style.background = '#e8f5e9';
+
+                resetBoard();
+                pairsFound++;
+
+                if (pairsFound === totalPairs) {
+                    setTimeout(() => {
+                        grid.style.display = 'none';
+                        title.style.display = 'none';
+                        victoryMsg.style.display = 'flex';
+
+                        // Play homage music
+                        const audio = new Audio('images/hommage.mp3');
+                        audio.volume = 1.0;
+                        audio.play().catch(e => console.log("Audio play failed", e));
+                    }, 800);
+                }
+            }
+
+            function unflipCards() {
+                lockBoard = true;
+
+                // Play Wrong Sound
+                new Audio('images/wrong.mp3').play().catch(() => { });
+
+                setTimeout(() => {
+                    firstCard.classList.remove('flipped');
+                    secondCard.classList.remove('flipped');
+                    resetBoard();
+                }, 1000);
+            }
+
+            function resetBoard() {
+                [hasFlippedCard, lockBoard] = [false, false];
+                [firstCard, secondCard] = [null, null];
+            }
+        })();
+    </script>
+</body>
+
+</html>
