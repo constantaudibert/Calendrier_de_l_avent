@@ -43,43 +43,48 @@
 
         .comic-wrapper {
             position: relative;
-            max-width: 90%;
-            max-height: 70vh;
+            max-width: 95%;
+            /* Wider on mobile */
             margin-bottom: 10px;
             border: 5px solid #2c3e50;
             border-radius: 5px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
             overflow: hidden;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
+            /* Stack image and text */
             background: white;
         }
 
         .comic-wrapper img {
             width: 100%;
             height: auto;
-            max-height: 60vh;
+            max-height: 50vh;
+            /* Reduce max height to fit text */
             object-fit: contain;
             display: block;
         }
 
         .comic-text-overlay {
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 85%;
-            background: rgba(255, 255, 255, 0.95);
+            /* Now a normal block below image */
+            position: relative;
+            bottom: auto;
+            left: auto;
+            transform: none;
+            width: 100%;
+            background: #fff;
             padding: 15px;
-            border: 3px solid #2c3e50;
-            border-radius: 10px;
+            box-sizing: border-box;
+            /* padding inside width */
+            border-top: 2px solid #2c3e50;
+            border-radius: 0;
             color: #2c3e50;
             font-family: 'Montserrat', sans-serif;
             font-weight: bold;
-            font-size: 1.1em;
+            font-size: 1em;
+            /* readable size */
             text-align: center;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            z-index: 10;
+            box-shadow: none;
         }
 
         /* GAME PHASE */
