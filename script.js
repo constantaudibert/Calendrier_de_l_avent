@@ -68,8 +68,7 @@ function initializeCalendar() {
 
 
 
-        // RESET & CHECK (Corruption inactive pour le moment)
-        localStorage.removeItem('day24_corrupted');
+        // CHECK CORRUPTION STATE
         if (localStorage.getItem('day24_corrupted') === 'true') {
 
             // 1. Appliquer le thème Grinch globalement (CSS se charge des couleurs)
