@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>23 Décembre</title>
+    <style>
+        /* Scoped styles for Day 23 */
+        #content-23 {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            width: 100%;
+            background: #ffffff;
+            /* White background as requested */
+            font-family: 'Montserrat', sans-serif;
+            text-align: center;
+            padding: 10px;
+            box-sizing: border-box;
+            border-radius: 15px;
+            color: #333;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* COMIC PHASE */
+        .comic-phase {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+            justify-content: center;
+        }
+
+        .comic-phase.active {
+            display: flex;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .comic-wrapper {
+            position: relative;
+            max-width: 95%;
+            margin-bottom: 10px;
+            border: 4px solid #fff;
+            border-radius: 5px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            background: #fff;
+        }
+
+        .comic-wrapper img {
+            width: 100%;
+            height: auto;
+            max-height: 50vh;
+            object-fit: contain;
+            display: block;
+        }
+
+        .comic-text-block {
+            background: #fff;
+            color: #2c3e50;
+            padding: 15px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1em;
+            border-top: 2px solid #2c3e50;
+        }
+
+        /* GAME PHASE (Archeology) */
+        .game-phase {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        .game-phase.active {
+            display: flex;
+            animation: fadeIn 1s ease;
+        }
+
+        #sand-canvas {
+            border: 4px solid #e67e22;
+            /* Desert color */
+            border-radius: 10px;
+            background: url('images/sable_telecommande.png') no-repeat center center;
+            /* Hidden treasure bg */
+            background-size: cover;
+            cursor: crosshair;
+            touch-action: none;
+            max-width: 90%;
+            max-height: 50vh;
+        }
+
+        .btn-action {
+            background-color: #e67e22;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1.1em;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: 'Satisfy', cursive;
+            margin-top: 15px;
+            box-shadow: 0 5px 15px rgba(230, 126, 34, 0.4);
+        }
+
+        .btn-action:hover {
+            transform: scale(1.05);
+        }
+
+        /* CLIFFHANGER (Green Chains) */
+        .cliffhanger-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 255, 0, 0.1);
+            pointer-events: none;
+            z-index: 20;
+            display: none;
+        }
+
+        .green-chains {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(45deg,
+                    transparent,
+                    transparent 10px,
+                    #0f0 10px,
+                    #0f0 12px);
+            opacity: 0.5;
+            mix-blend-mode: screen;
+        }
+
+        /* Speech Bubble Overlay for Intro Image */
+        .speech-bubble {
+            position: absolute;
+            top: 15%;
+            right: 5%;
+            background: white;
+            padding: 15px;
+            border-radius: 50%;
+            border: 3px solid #000;
+            color: #000;
+            font-family: 'Comic Sans MS', 'Backissues', sans-serif;
+            font-weight: bold;
+            font-size: 0.9em;
+            max-width: 120px;
+            z-index: 100;
+            box-shadow: 3px 3px 0px rgba(0, 0, 0, 0.2);
+        }
+
+        @keyframes fadeInText {
+            0% {
+                opacity: 0;
+            }
+
+            30% {
+                opacity: 1;
+            }
+
+            80% {
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 0;
+            }
+        }
+
+        .speech-bubble::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 20px;
+            border-width: 10px 10px 0;
+            border-style: solid;
+            border-color: #000 transparent;
+            display: block;
+            width: 0;
+        }
+
+        h2 {
+            font-family: 'Satisfy', cursive;
+            margin: 10px 0;
+            font-size: 1.8em;
+            color: #f1c40f;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="content-23">
+
+        <!-- PHASE 1: LAB & PORTAL -->
+        <div id="phase-intro" class="comic-phase active">
+            <h2 id="intro-title">Intrusion Nocturne</h2>
+            <div class="comic-wrapper">
+                <img id="intro-img" src="images/racaille_labo_fr.png" alt="Intro">
+                <!-- Overlay Bubble -->
+                <div class="speech-bubble" id="intro-bubble" style="display:none;">
+                    WOW... C'EST QUOI ÇA ?
+                </div>
+                <div class="comic-text-block" id="intro-text">
+                    La nuit est tombée. Une silhouette se faufile... 'C'est quoi ce truc qui brille ?'
+                </div>
+            </div>
+            <button class="btn-action" onclick="nextIntro()">Toucher</button>
+        </div>
+
+        <!-- PHASE 2: DESERT ENCOUNTER -->
+        <div id="phase-desert" class="comic-phase">
+            <h2>Changement de décor...</h2>
+            <div class="comic-wrapper">
+                <img id="desert-img" src="images/racaille_desert_v2.png" alt="Desert">
+                <!-- Overlay Bubble -->
+                <div class="speech-bubble" id="desert-bubble" style="display:none; top: 10%; right: 10%;">
+                    MAIS... OÙ SUIS-JE ??
+                </div>
+                <div class="comic-text-block" id="desert-text">
+                    ZUUUIP ! <br>
+                    La Racaille atterrit perdue au milieu de nulle part.
+                </div>
+            </div>
+            <button class="btn-action" onclick="nextDesert()">Suivant</button>
+        </div>
+
+        <!-- TRANSITION PHASE (ELLIPSE) -->
+        <div id="phase-transition" class="comic-phase"
+            style="background:white; justify-content:center; color:#333; flex-direction:column; text-align:center;">
+            <img src="images/grinch_cat.jpeg"
+                style="width:200px; border-radius:10px; border:2px solid #39ff14; margin-bottom:20px; box-shadow:0 0 15px #39ff14;">
+            <h2 style="color:#2c3e50; font-family:'Courier New', monospace;">La case 24 est bloquée...</h2>
+            <p style="color:#333; opacity:0; animation: fadeInText 6s forwards; max-width:80%;">"Pendant ton
+                absence..."<br><br>Le chat du Grinch en à profiter pour corrompre la case !</p>
+        </div>
+
+        <!-- PHASE 3: ARCHEOLOGY GAME -->
+        <div id="phase-game" class="game-phase">
+            <h2>Fouilles Archéologiques</h2>
+            <p style="font-size:0.9em; margin-bottom:10px;">"La télécommande est tombée dans le sable ! Frotte pour la
+                retrouver !"</p>
+            <canvas id="sand-canvas"></canvas>
+            <p id="game-status" style="display:none; color:#2ecc71; font-weight:bold;">Objet trouvé !</p>
+            <button id="btn-found" class="btn-action" style="display:none;" onclick="finishGame()">Activer le
+                portail</button>
+        </div>
+
+        <!-- PHASE 4: CLIFFHANGER -->
+        <div id="phase-cliffhanger" class="comic-phase">
+            <h2>Catastrophe !</h2>
+            <div class="comic-wrapper">
+                <div class="comic-wrapper">
+                    <!-- Final Surgeon Image -->
+                    <img id="final-img" src="images/chirurgien_renfort.png" alt="Final">
+                    <!-- Overlay Bubble Removed -->
+                    <div class="speech-bubble" id="final-bubble" style="display:none;"></div>
+                    <div class="comic-text-block" id="final-text">
+                        De retour ! Mais quelque chose cloche...<br>
+                    </div>
+                </div>
+                <button class="btn-action" onclick="endDay23()">Retour</button>
+            </div>
+
+        </div>
+
+        <script>
+            (function () {
+                // --- COMICS ---
+                // --- COMICS ---
+                let introStep = 0;
+                const introImages = ['images/racaille_labo_fr.png', 'images/racaille_portal_suck.png'];
+                const introTexts = [
+                    "La nuit est tombée. Une silhouette se faufile... 'C'est quoi ce truc qui brille ?'",
+                    "ZRRRZZZT ! LA MACHINE S'EMBALLE ! 'AHHHHHHH !!!'"
+                ];
+
+                window.nextIntro = function () {
+                    introStep++;
+                    if (introStep < introImages.length) {
+                        document.getElementById('intro-img').src = introImages[introStep];
+                        document.getElementById('intro-text').innerText = introTexts[introStep];
+
+                        // Logic for Overlay Bubbles - Removed for Intro as image has text now.
+                        const bubble = document.getElementById('intro-bubble');
+                        bubble.style.display = 'none';
+
+                        if (introStep === introImages.length - 1) document.querySelector('#phase-intro .btn-action').innerText = "ENTRER";
+
+                    } else {
+                        document.getElementById('phase-intro').classList.remove('active');
+                        document.getElementById('phase-desert').classList.add('active');
+                    }
+                };
+
+                let desertStep = 0;
+                const desertImages = ['images/racaille_desert_fr.png', 'images/touareg_encounter_fr_v2.png'];
+                const desertTexts = [
+                    "ZUUUIP ! La Racaille atterrit dans le désert. Perdue au milieu de nulle part.",
+                    "Un Touareg sur un dromadaire s'approche : Tu es perdue ?'"
+                ];
+
+                window.nextDesert = function () {
+                    desertStep++;
+                    if (desertStep < desertImages.length) {
+                        document.getElementById('desert-img').src = desertImages[desertStep];
+                        document.getElementById('desert-text').innerText = desertTexts[desertStep];
+
+                        // Images have French text embedded, hide overlay
+                        const bubble = document.getElementById('desert-bubble');
+                        bubble.style.display = 'none';
+
+                    } else {
+                        document.getElementById('phase-desert').classList.remove('active');
+                        document.getElementById('phase-game').classList.add('active');
+                        initArcheology();
+                    }
+                };
+
+                // --- ARCHEOLOGY GAME ---
+                let canvas, ctx;
+                let isDrawing = false;
+
+                window.initArcheology = function () {
+                    canvas = document.getElementById('sand-canvas');
+                    ctx = canvas.getContext('2d');
+
+                    // Fit canvas to screen
+                    const rect = canvas.parentElement.getBoundingClientRect();
+                    canvas.width = Math.min(350, window.innerWidth * 0.8);
+                    canvas.height = Math.min(350, window.innerHeight * 0.5);
+
+                    // Draw Sand Layer
+                    ctx.fillStyle = '#e67e22'; // Sand color
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                    // Add texture (noise)
+                    for (let i = 0; i < 500; i++) {
+                        ctx.fillStyle = rgba(211, 84, 0, Math.random());
+                        ctx.fillRect(Math.random() * canvas.width, Math.random() * canvas.height, 2, 2);
+                    }
+
+                    // Events
+                    canvas.addEventListener('mousedown', startDig);
+                    canvas.addEventListener('mousemove', dig);
+                    canvas.addEventListener('mouseup', endDig);
+                    canvas.addEventListener('touchstart', startDig);
+                    canvas.addEventListener('touchmove', dig);
+                    canvas.addEventListener('touchend', endDig);
+                };
+
+                function startDig(e) { isDrawing = true; dig(e); }
+                function endDig() { isDrawing = false; checkClearance(); }
+
+                function dig(e) {
+                    if (!isDrawing) return;
+                    e.preventDefault();
+                    const rect = canvas.getBoundingClientRect();
+                    const x = (e.clientX || e.touches[0].clientX) - rect.left;
+                    const y = (e.clientY || e.touches[0].clientY) - rect.top;
+
+                    ctx.globalCompositeOperation = 'destination-out';
+                    ctx.beginPath();
+                    ctx.arc(x, y, 35, 0, Math.PI * 2); // Increased size
+                    ctx.fill();
+                }
+
+                function checkClearance() {
+                    // Simple verify: check center pixel or percentage
+                    // Here we just check if enough pixels are cleared
+                    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                    let clearedPixels = 0;
+                    for (let i = 3; i < imageData.data.length; i += 4) {
+                        if (imageData.data[i] === 0) clearedPixels++; // Alpha is 0
+                    }
+                    const total = imageData.data.length / 4;
+                    if (clearedPixels / total > 0.15) { // Lowered threshold to 15%
+                        document.getElementById('game-status').style.display = 'block';
+                        document.getElementById('btn-found').style.display = 'inline-block';
+                    }
+                }
+
+                window.finishGame = function () {
+                    document.getElementById('phase-game').classList.remove('active');
+
+                    // Show Ellipse
+                    document.getElementById('phase-transition').classList.add('active');
+
+                    // TRIGGER CORRUPTION
+                    if (typeof window.corruptDay24 === "function") {
+                        window.corruptDay24();
+                    } else if (window.parent && typeof window.parent.corruptDay24 === "function") {
+                        window.parent.corruptDay24();
+                    }
+
+                    // Wait 6 seconds then show Cliffhanger
+                    setTimeout(() => {
+                        document.getElementById('phase-transition').classList.remove('active');
+                        document.getElementById('phase-cliffhanger').classList.add('active');
+                    }, 6000);
+                };
+
+                window.endDay23 = function () {
+                    // Reload to return to calendar and see the corruption
+                    if (window.parent) {
+                        window.parent.location.reload();
+                    } else {
+                        window.location.reload();
+                    }
+                };
+
+                function rgba(r, g, b, a) { return `rgba(${r},${g},${b},${a})`; }
+
+            })();
+        </script>
+</body>
+
+</html>
