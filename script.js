@@ -2,12 +2,12 @@
 function initializeCalendar() {
     const today = new Date();
     // getMonth() retourne 0 pour Janvier, donc 11 pour Décembre (12)
-    const currentMonth = today.getMonth() + 1;
-    const currentDay = today.getDate();
+    //const currentMonth = today.getMonth() + 1;
+    //const currentDay = today.getDate();
 
     // SIMULATION POUR TEST (Supprimé pour production)
-    //const currentMonth = 12;
-    //const currentDay = 1;
+    const currentMonth = 12;
+    const currentDay = 23;
 
     const pageAttente = document.getElementById('page-attente');
     const calendrier = document.getElementById('calendrier');
@@ -65,8 +65,88 @@ function initializeCalendar() {
         } else {
             starFinal.style.display = 'none';
         }
+
+
+
+        // RESET & CHECK (Corruption inactive pour le moment)
+        localStorage.removeItem('day24_corrupted');
+        if (localStorage.getItem('day24_corrupted') === 'true') {
+
+            // 1. Appliquer le thème Grinch globalement (CSS se charge des couleurs)
+            document.body.classList.add('grinch-theme');
+
+            // 2. Bloquer l'ouverture des cases
+            for (let i = 1; i <= 24; i++) {
+                const door = document.getElementById(`door-${i}`);
+                if (door) {
+                    // On retire le click normal
+                    door.onclick = function (e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        alert("ERREUR : SYSTÈME PIRATÉ PAR LE GRINCH !");
+                    };
+                }
+            }
+
+            // Show Scientist Footer
+            const scientistFooter = document.getElementById('scientist-footer');
+            if (scientistFooter) scientistFooter.style.display = 'flex';
+
+
+            // Show Countdown
+            const countdownContainer = document.getElementById('countdown-container');
+            if (countdownContainer) {
+                countdownContainer.style.display = 'block';
+                startTimer();
+            }
+        }
     }
 }
+
+function startTimer() {
+    // Target: December 24, 2025 at 23:00:00
+    const targetDate = new Date('2025-12-24T23:00:00');
+
+    function update() {
+        const now = new Date();
+        const diff = targetDate - now;
+
+        const timerElement = document.getElementById('timer');
+        const btnElement = document.getElementById('countdown-btn');
+
+        if (!timerElement || !btnElement) return;
+
+        if (diff <= 0) {
+            timerElement.innerText = "00:00:00";
+            btnElement.querySelector('.text').innerText = "CLINIQUE OUVERTE !";
+            btnElement.style.cursor = "pointer";
+            // Style de succès (Blanc/Or inversé ou Vert validé ?)
+            btnElement.style.background = "#28a745"; // Vert succès classique
+            btnElement.style.borderColor = "#fff";
+            return;
+        }
+
+        const hours = Math.floor(diff / (1000 * 60 * 60));
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+        const hoursStr = String(hours).padStart(2, '0');
+        const minutesStr = String(minutes).padStart(2, '0');
+        const secondsStr = String(seconds).padStart(2, '0');
+
+        timerElement.innerText = `${hoursStr}:${minutesStr}:${secondsStr}`;
+
+        requestAnimationFrame(update);
+    }
+    update();
+}
+
+// Fonction globale pour corrompre le jour 24 (appelée depuis jour 23)
+window.corruptDay24 = function () {
+    localStorage.setItem('day24_corrupted', 'true');
+    // No need to manually manipulate DOM here, just reload to let initializeCalendar do the global work
+    console.log("Global Corruption Triggered!");
+};
 
 
 // Fonction pour charger et afficher le contenu de la surprise du jour
@@ -103,11 +183,10 @@ function loadContent(day) {
             }
         })
         .catch(error => {
-            console.error('Erreur de chargement du contenu:', error);
-            document.getElementById('popup-content').innerHTML = `
-    <h2>Jour ${day} : Surprise non prête!</h2>
-        <p>Oups, la surprise pour ce jour n'a pas encore été préparée. Revenez plus tard !</p>
-`;
+            console.warn('Fetch failed (likely CORS on file://). Falling back to Iframe.', error);
+            const popupContent = document.getElementById('popup-content');
+            // Fallback: Use Iframe
+            popupContent.innerHTML = `<iframe src="content/${day}.html" style="width:100%; height:600px; border:none; background:transparent;"></iframe>`;
             document.getElementById('popup').style.display = 'block';
         });
 }

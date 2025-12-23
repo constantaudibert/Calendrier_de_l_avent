@@ -290,8 +290,8 @@ body {
     position: absolute;
     bottom: 15%;
     /* Ajusté pour être proportionnel */
-    width: 4px;
-    height: 4px;
+    width: 8px;
+    height: 8px;
     background: #d4af37;
     border-radius: 50%;
     box-shadow: 0 0 2px #d4af37;
@@ -563,6 +563,11 @@ body {
         /* Bordure plus fine */
     }
 
+    .case::after {
+        width: 4px;
+        height: 4px;
+    }
+
     .modal-content {
         width: 95%;
         padding: 20px;
@@ -578,6 +583,45 @@ body {
 
 /* Styles pour le jeu de mots */
 /* ... (autres styles inchangés) ... */
+
+@media (max-width: 768px) {
+
+    /* --- PARAMÈTRES MOBILE (SMARTPHONE) --- */
+    #scientist-footer {
+        /* Position par rapport au bas-droit de l'écran */
+        bottom: 80px !important;
+        /* Ajustez la hauteur ici */
+        right: 10px !important;
+        /* Ajustez l'écart bord droit ici */
+    }
+
+    #scientist-msg-img {
+        /* Taille de l'image sur mobile */
+        width: 130px !important;
+        /* Ajustez la grosseur de l'image ici */
+    }
+}
+
+/* --- PARAMÈTRES ORDINATEUR (PC) --- */
+#scientist-footer {
+    display: none;
+    /* Masqué par défaut (géré par JS) */
+    pointer-events: none;
+    position: fixed;
+    /* Position de base sur PC */
+    bottom: 20px;
+    right: 20px;
+    z-index: 999;
+    align-items: flex-end;
+}
+
+#scientist-msg-img {
+    /* Taille de l'image sur PC */
+    width: 250px;
+    height: auto;
+    filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.2));
+    display: block;
+}
 
 #mixed-letters {
     margin-bottom: 20px;
@@ -627,4 +671,182 @@ body {
 .tile.drag-over {
     /* Mettre une bordure ou une ombre pour indiquer la zone de dépôt */
     box-shadow: 0 0 10px #DAA520;
+}
+
+/* -------------------------------------------------------------------
+   MUSIC PLAYER STYLES
+   ------------------------------------------------------------------- */
+.music-player {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    width: 100%;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* -------------------------------------------------------------------
+   CORRUPTION DAY 24 (The Grinch Effect - Color Swap Only)
+   ------------------------------------------------------------------- */
+
+/* Quand le corps a la classe .grinch-theme, on remplace le doré par du vert */
+
+/* 1. Contour du Sapin (SVG) */
+body.grinch-theme .tree-shape {
+    stroke: #93c54b !important;
+    /* Vert Grinch */
+    filter: drop-shadow(0 0 10px #rgba(147, 197, 75, 0.5));
+}
+
+/* 2. Les Cases (Désactivées/Corrompues) */
+body.grinch-theme .case {
+    border-color: #93c54b !important;
+    color: #93c54b !important;
+    background-color: #000 !important;
+    /* Fond noir pour le contraste comme demandé précédemment, ou garder blanc ? Le user a dit "tout ce qui était doré" */
+    /* On garde le fond noir pour l'effet "éteint/hacké" mais on préserve la police */
+    box-shadow: 0 0 15px rgba(147, 197, 75, 0.3) !important;
+}
+
+/* Si le numéro est à l'intérieur, il prend la couleur verte */
+body.grinch-theme .case {
+    color: #93c54b !important;
+}
+
+/* Le petit point décoratif */
+body.grinch-theme .case::after {
+    background: #93c54b !important;
+    box-shadow: 0 0 2px #93c54b !important;
+}
+
+/* Animation de "secousse" conservée mais discrète */
+body.grinch-theme .case {
+    animation: glitch-shake 3s infinite;
+}
+
+@keyframes glitch-shake {
+    100% {
+        opacity: 0;
+    }
+}
+
+/* Countdown Timer Styles (Golden Theme) */
+#countdown-container {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2000;
+    pointer-events: none;
+}
+
+.timer-btn {
+    pointer-events: auto;
+    /* Gradient Doré */
+    background: linear-gradient(135deg, #d4af37 0%, #f1c40f 50%, #d4af37 100%);
+    color: #ffffff;
+    /* Texte blanc */
+    border: 2px solid #fff;
+    /* Bordure blanche fine */
+    border-radius: 50px;
+    /* Bords arrondis */
+    padding: 12px 30px;
+
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.1rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    cursor: wait;
+
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.5);
+    /* Ombre dorée */
+    transition: all 0.3s ease;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.timer-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(212, 175, 55, 0.7);
+    filter: brightness(1.1);
+}
+
+#timer {
+    font-size: 1.6rem;
+    letter-spacing: 1px;
+    font-variant-numeric: tabular-nums;
+    /* Empêche le sautillement des chiffres */
+}
+
+@media (max-width: 768px) {
+    #countdown-container {
+        bottom: 90px;
+    }
+
+    .timer-btn {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+    }
+
+    #timer {
+        font-size: 1.3rem;
+    }
+}
+
+cursor: wait;
+position: relative;
+overflow: hidden;
+clip-path: polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%);
+transition: all 0.3s ease;
+box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
+display: flex;
+flex-direction: column;
+align-items: center;
+gap: 5px;
+}
+
+#timer {
+    font-size: 1.5rem;
+    letter-spacing: 2px;
+}
+
+.glitch-btn:hover {
+    box-shadow: 0 0 25px rgba(0, 255, 0, 0.8);
+    text-shadow: 0 0 5px #0f0;
+}
+
+.glitch-btn {
+    animation: glitch-skew 4s infinite;
+}
+
+@media (max-width: 768px) {
+    #countdown-container {
+        bottom: 90px;
+        /* Above the scientist footer on mobile */
+    }
+
+    .glitch-btn {
+        padding: 8px 15px;
+        font-size: 0.8rem;
+    }
+
+    #timer {
+        font-size: 1.2rem;
+    }
 }

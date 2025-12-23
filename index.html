@@ -7,11 +7,12 @@
     <title>Calendrier de l'Avent</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Satisfy&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="style.css?v=reset1">
 </head>
 
 <body>
+
 
     <div id="page-attente" style="display: none;">
         <h1>Calendrier de l'Avent pour la meilleure des mamans</h1>
@@ -19,7 +20,7 @@
             <span class="star">⭐</span>
         </div>
         <p>
-            Chère Maman, le calendrier n'est pas encore prêt !
+            Chère Maman, le calendrier n'est pas encore près !
             Encore quelques jours avant de découvrir ton calendrier de l'avent 2025
             Du <strong>1er décembre</strong> au <strong>24 décembre</strong> tu pourras ouvrir chaque jour une nouvelle
             case !!!!
@@ -77,6 +78,14 @@
         </div>
     </div>
 
+    <!-- SCIENTIST WARNING FOOTER -->
+    <div id="scientist-footer">
+        <div style="position:relative;">
+            <!-- Image sticker avec texte intégré -->
+            <img id="scientist-msg-img" src="images/scientifique_sticker.png" alt="Scientifique">
+        </div>
+    </div>
+
     <div id="popup" class="modal" style="display: none;">
         <div class="modal-content">
             <span class="close-button" onclick="document.getElementById('popup').style.display='none';">&times;</span>
@@ -85,8 +94,16 @@
         </div>
     </div>
 
+    <!-- Countdown Container -->
+    <div id="countdown-container" style="display: none;">
+        <button id="countdown-btn" class="timer-btn">
+            <span class="text">SOLUTION DANS : </span>
+            <span id="timer">--:--:--</span>
+        </button>
+    </div>
+
     <script src="scrabble_game.js"></script>
-    <script src="script.js"></script>
+    <script src="script.js?v=reset_final"></script>
 
 </body>
 
