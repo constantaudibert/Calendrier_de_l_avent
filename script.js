@@ -117,7 +117,7 @@ function startTimer() {
 
         if (diff <= 0) {
             timerElement.innerText = "00:00:00";
-            btnElement.querySelector('.text').innerText = "CLINIQUE OUVERTE !";
+            btnElement.querySelector('.text').innerText = "⬅️Rassemblement ! !";
             btnElement.style.cursor = "pointer";
             // Style de succès (Blanc/Or inversé ou Vert validé ?)
             btnElement.style.background = "#28a745"; // Vert succès classique
