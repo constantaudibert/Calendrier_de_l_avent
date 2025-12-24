@@ -1,110 +1,113 @@
 // Fonction principale pour initialiser le calendrier
 function initializeCalendar() {
-    const today = new Date();
-    // getMonth() retourne 0 pour Janvier, donc 11 pour Décembre (12)
-    //const currentMonth = today.getMonth() + 1;
-    //const currentDay = today.getDate();
+    // -- CONFIGURATION DE DATE --
+    // Production (AUTOMATIQUE):
+    const now = new Date();
+    const currentMonth = now.getMonth() + 1;
+    const currentDay = now.getDate();
 
-    // SIMULATION POUR TEST (Supprimé pour production)
-    const currentMonth = 12;
-    const currentDay = 23;
+    // SIMULATION POUR TEST (Désactivé)
+    // const currentMonth = 12;
+    // const currentDay = 24;
 
     const pageAttente = document.getElementById('page-attente');
     const calendrier = document.getElementById('calendrier');
 
-    // Si nous ne sommes pas en Décembre, ou si nous sommes en Décembre mais avant le jour 1
-    if (currentMonth !== 12 || currentDay < 1) {
-        // Afficher la page d'attente
-        pageAttente.style.display = 'flex'; // Utiliser flex pour centrer le contenu
+    if (currentMonth !== 12) {
+        pageAttente.style.display = 'flex';
         calendrier.style.display = 'none';
+        return;
+    }
 
-    } else {
-        // Nous sommes en Décembre. Afficher le calendrier
-        pageAttente.style.display = 'none';
-        calendrier.style.display = 'grid';
+    pageAttente.style.display = 'none';
+    calendrier.style.display = 'grid';
 
-        // Parcourir les 24 jours du calendrier
-        let allUnlocked = true; // Pour vérifier si tout est débloqué
+    // -- ETAT DU JEU --
+    const isCorrupted = localStorage.getItem('day24_corrupted') === 'true';
+    const isGameFinished = localStorage.getItem('game_finished') === 'true';
+    const swordObtained = localStorage.getItem('sword_obtained') === 'true';
 
-        for (let i = 1; i <= 24; i++) {
-            const dayDoor = document.getElementById(`door-${i}`);
+    // -- GENERATION DES CASES --
+    for (let i = 1; i <= 24; i++) {
+        const door = document.getElementById(`door-${i}`);
+        if (!door) continue;
 
-            if (dayDoor) {
-                // Vérifier si la case doit être accessible (Jour J ou antérieur)
-                if (i <= currentDay) {
-                    dayDoor.classList.add('unlocked');
-                    dayDoor.classList.remove('locked');
+        // Reset classes
+        door.classList.remove('unlocked', 'locked', 'barred', 'broken-bars');
 
-                    // Rendre la case cliquable pour charger le contenu
-                    dayDoor.onclick = function () {
-                        loadContent(i);
+        if (i <= currentDay) {
+            door.classList.add('unlocked');
+
+            // LOGIQUE JOUR 24
+            if (i === 24) {
+                // Priorité : Game Finished > Corrupted with Sword > Corrupted without Sword > Normal
+                if (isGameFinished) {
+                    // Jeu fini : accessible (bonus)
+                    door.onclick = () => loadContent(24);
+                } else if (isCorrupted && swordObtained) {
+                    door.classList.add('broken-bars', 'door-24');
+                    door.onclick = () => loadContent(24);
+                } else if (isCorrupted && !swordObtained) {
+                    door.classList.add('barred', 'door-24');
+                    door.onclick = (e) => {
+                        e.preventDefault(); e.stopPropagation();
+                        alert("CETTE CASE EST BARRICADÉE ! IL TE FAUT UNE ARME !");
                     };
-
                 } else {
-                    allUnlocked = false; // Il reste des cases verrouillées
-                    // La case est verrouillée (pas encore le jour J)
-                    dayDoor.classList.add('locked');
-                    dayDoor.classList.remove('unlocked');
-
-                    // Rendre la case non cliquable et afficher un message d'attente
-                    dayDoor.onclick = function () {
-                        alert("Pas encore le jour J ! Il faut patienter jusqu'au " + i + " décembre.");
-                    };
+                    // Normal (avant hack, si accessible)
+                    door.onclick = () => loadContent(24);
                 }
             }
-        }
+            // AUTRES CASES
+            else {
+                if (isCorrupted && !isGameFinished) {
+                    door.onclick = (e) => { e.preventDefault(); alert("ERREUR : SYSTÈME PIRATÉ PAR LE GRINCH !"); };
+                    door.style.opacity = "0.7";
+                } else {
+                    door.onclick = () => loadContent(i);
+                }
+            }
 
-        // GESTION DE L'ÉTOILE FINALE
-        // Visible uniquement si on est le 24 ou plus (donc toutes les cases sont débloquables)
-        const starFinal = document.getElementById('star-final');
-        if (currentDay >= 24) {
+        } else {
+            door.classList.add('locked');
+            door.onclick = () => alert(`Patience ! Reviens le ${i} décembre.`);
+        }
+    }
+
+    // -- ETOILE FINALE --
+    const starFinal = document.getElementById('star-final');
+    if (starFinal) {
+        // L'étoile ne s'affiche QUE si le jeu est fini (calendrier sauvé)
+        if (isGameFinished) {
             starFinal.style.display = 'block';
-            starFinal.onclick = function () {
-                alert("Joyeux Noël ! 🎄⭐");
-            };
+            starFinal.style.animation = "clignoter 2s infinite";
+            starFinal.onclick = () => alert("JOYEUX NOËL MAMAN ❤️");
         } else {
             starFinal.style.display = 'none';
         }
+    }
 
-
-
-        // CHECK CORRUPTION STATE
-        if (localStorage.getItem('day24_corrupted') === 'true') {
-
-            // 1. Appliquer le thème Grinch globalement (CSS se charge des couleurs)
-            document.body.classList.add('grinch-theme');
-
-            // 2. Bloquer l'ouverture des cases
-            for (let i = 1; i <= 24; i++) {
-                const door = document.getElementById(`door-${i}`);
-                if (door) {
-                    // On retire le click normal
-                    door.onclick = function (e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        alert("ERREUR : SYSTÈME PIRATÉ PAR LE GRINCH !");
-                    };
-                }
-            }
-
-            // Show Scientist Footer
-            const scientistFooter = document.getElementById('scientist-footer');
-            if (scientistFooter) scientistFooter.style.display = 'flex';
-
-
-            // Show Countdown
-            const countdownContainer = document.getElementById('countdown-container');
-            if (countdownContainer) {
-                countdownContainer.style.display = 'block';
-                startTimer();
-            }
+    // -- THEME GRINCH --
+    if (isCorrupted && !isGameFinished) {
+        document.body.classList.add('grinch-theme');
+        const countdownContainer = document.getElementById('countdown-container');
+        if (countdownContainer) {
+            countdownContainer.style.display = 'block';
+            startTimer();
         }
+    } else {
+        document.body.classList.remove('grinch-theme');
+        const countdownContainer = document.getElementById('countdown-container');
+        if (countdownContainer) countdownContainer.style.display = 'none';
+
+        const scientistFooter = document.getElementById('scientist-footer');
+        if (scientistFooter) scientistFooter.style.display = 'none';
     }
 }
 
 function startTimer() {
-    // Target: December 24, 2025 at 23:00:00
-    const targetDate = new Date('2025-12-24T23:00:00');
+    // Target: December 24, 2024 at 23:00:00 (Past date for testing)
+    const targetDate = new Date('2024-12-24T23:00:00');
 
     function update() {
         const now = new Date();
@@ -117,11 +120,20 @@ function startTimer() {
 
         if (diff <= 0) {
             timerElement.innerText = "00:00:00";
-            btnElement.querySelector('.text').innerText = "⬅️Rassemblement ! !";
+            btnElement.querySelector('.text').innerText = "RASSEMBLEMENT !";
             btnElement.style.cursor = "pointer";
             // Style de succès (Blanc/Or inversé ou Vert validé ?)
             btnElement.style.background = "#28a745"; // Vert succès classique
             btnElement.style.borderColor = "#fff";
+
+            // SHOW REINFORCEMENTS
+            const renforts = document.getElementById('reinforcements-btn');
+            if (renforts) renforts.style.display = 'block';
+
+            // HIDE SCIENTIST
+            const scientistFooter = document.getElementById('scientist-footer');
+            if (scientistFooter) scientistFooter.style.display = 'none';
+
             return;
         }
 
@@ -166,6 +178,12 @@ function loadContent(day) {
 
             // Afficher la modale
             document.getElementById('popup').style.display = 'block';
+
+            // HIDE COUNTDOWN TO PREVENT OVERLAP
+            const cdContainer = document.getElementById('countdown-container');
+            if (cdContainer) cdContainer.style.display = 'none';
+
+            // IMPORTANT : Exécuter les scripts contenus dans le HTML chargé
 
             // IMPORTANT : Exécuter les scripts contenus dans le HTML chargé
             // Utilisation de Regex pour extraire le contenu des balises <script>
