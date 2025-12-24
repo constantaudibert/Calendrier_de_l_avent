@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Le Boss Final</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Satisfy&display=swap"
+        rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Montserrat', sans-serif;
+            background: transparent;
+            /* Transparent for modal integration */
+            color: #333;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            /* Fit modal height */
+        }
+
+        /* Scoped styles for Day 24 - Standard Modal Look */
+        #content-24 {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            width: 100%;
+            background: #ffffff;
+            /* White card style like day 23 */
+            text-align: center;
+            padding: 15px;
+            box-sizing: border-box;
+            border-radius: 15px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        h1 {
+            font-family: 'Satisfy', cursive;
+            color: #e74c3c;
+            font-size: 2em;
+            margin-bottom: 10px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+            margin-top: 0;
+        }
+
+        /* BOSS PHASE */
+        #boss-phase {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #boss-img {
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            border: 4px solid #e74c3c;
+            object-fit: cover;
+            box-shadow: 0 5px 15px rgba(192, 57, 43, 0.4);
+            transition: transform 0.1s;
+            background: #fff;
+            margin-bottom: 15px;
+        }
+
+        .shake {
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+            0% {
+                transform: translate(0, 0);
+            }
+
+            25% {
+                transform: translate(-5px, 5px);
+            }
+
+            50% {
+                transform: translate(5px, -5px);
+            }
+
+            75% {
+                transform: translate(-5px, -5px);
+            }
+
+            100% {
+                transform: translate(0, 0);
+            }
+        }
+
+        /* Health Bar */
+        #health-container {
+            width: 80%;
+            max-width: 280px;
+            height: 20px;
+            background: #ecf0f1;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        #health-fill {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, #e74c3c, #c0392b);
+            transition: width 0.3s ease;
+        }
+
+        #health-text {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #555;
+            font-size: 11px;
+            z-index: 2;
+        }
+
+        /* Input Zone */
+        #input-zone {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            width: 100%;
+            align-items: center;
+        }
+
+        input {
+            padding: 10px 15px;
+            width: 70%;
+            max-width: 220px;
+            border-radius: 25px;
+            border: 2px solid #ddd;
+            font-size: 1em;
+            text-align: center;
+            outline: none;
+            transition: border 0.3s;
+            font-family: 'Satisfy', cursive;
+            color: #e74c3c;
+        }
+
+        input:focus {
+            border-color: #e74c3c;
+        }
+
+        button {
+            padding: 10px 25px;
+            border-radius: 25px;
+            border: none;
+            background: linear-gradient(45deg, #2ecc71, #27ae60);
+            color: white;
+            font-weight: bold;
+            font-size: 0.9em;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(46, 204, 113, 0.3);
+            transition: transform 0.1s;
+            font-family: 'Montserrat', sans-serif;
+            text-transform: uppercase;
+        }
+
+        button:active {
+            transform: translateY(2px);
+        }
+
+        /* VICTORY PHASE (Standard Modal Content) */
+        #victory-phase {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            animation: fadeIn 0.8s ease;
+        }
+
+        #victory-phase h1 {
+            font-size: 2em;
+            color: #d4af37;
+            margin-bottom: 10px;
+        }
+
+        #victory-phase p {
+            font-size: 1.1em;
+            color: #555;
+            margin-bottom: 15px;
+        }
+
+        #victory-phase img.success-img {
+            max-width: 90%;
+            max-height: 220px;
+            width: auto;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 15px;
+        }
+
+        #close-btn {
+            background: linear-gradient(135deg, #d4af37 0%, #f1c40f 100%);
+            color: #fff;
+            padding: 10px 25px;
+            font-size: 1em;
+            border-radius: 25px;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.4);
+        }
+
+        #close-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Floating Words */
+        .floater {
+            position: absolute;
+            color: #e67e22;
+            font-family: 'Satisfy', cursive;
+            font-weight: bold;
+            font-size: 1.5em;
+            animation: floatUp 1.5s forwards;
+            pointer-events: none;
+            z-index: 50;
+        }
+
+        @keyframes floatUp {
+            0% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+
+            100% {
+                opacity: 0;
+                transform: translateY(-100px) scale(1.5);
+            }
+        }
+
+        /* Confetti */
+        .confetti {
+            position: fixed;
+            width: 8px;
+            height: 8px;
+            background: #f00;
+            z-index: 9999;
+            animation: fall 3s linear infinite;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(-10vh) rotate(0deg);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(110vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="content-24">
+
+        <!-- BOSS PHASE -->
+        <div id="boss-phase">
+            <h1>Le Grinch</h1>
+            <img id="boss-img" src="images/grinch_cat.jpeg" alt="Grinch Cat">
+
+            <div id="health-container">
+                <div id="health-fill"></div>
+                <div id="health-text">PV: 100%</div>
+            </div>
+
+            <div id="input-zone">
+                <input type="text" id="love-word" placeholder="Envoyer un mot d'amour..."
+                    onkeypress="handleEnter(event)">
+                <button onclick="attackBoss()">Envoyer ❤️</button>
+            </div>
+        </div>
+
+        <!-- VICTORY PHASE -->
+        <div id="victory-phase">
+            <h1>Joyeux Noël Maman !</h1>
+            <p>L'amour a triomphé du Grinch !</p>
+            <img class="success-img" src="images/success_group_comic_final.png" alt="Victoire">
+            <button id="close-btn" onclick="closeGame()">Retour au Calendrier</button>
+        </div>
+
+    </div>
+
+    <!-- Audio -->
+    <audio id="sfx-meow" src="images/meow.mp3"></audio>
+    <audio id="sfx-win" src="images/victoire.mp3"></audio>
+    <audio id="victory-music" src="images/victoire.mp3"></audio>
+
+    <script>
+        let hp = 100;
+        const damage = 20;
+        const loveWords = ["Amour", "Tendresse", "Câlins", "Bisous", "Joie", "Bonheur", "Famille", "Cœur", "Maman", "Merci"];
+        const sfxMeow = document.getElementById('sfx-meow');
+        const sfxWin = document.getElementById('sfx-win');
+        const bossImg = document.getElementById('boss-img');
+        const hpFill = document.getElementById('health-fill');
+        const hpText = document.getElementById('health-text');
+
+        function handleEnter(e) { if (e.key === 'Enter') attackBoss(); }
+
+        function attackBoss() {
+            const input = document.getElementById('love-word');
+            const word = input.value.trim();
+            if (!word) {
+                input.style.border = "3px solid #e74c3c";
+                setTimeout(() => input.style.border = "2px solid #ddd", 800);
+                return;
+            }
+            if (hp <= 0) return;
+
+            sfxMeow.currentTime = 0; sfxMeow.play().catch(e => console.log(e));
+
+            hp -= damage;
+            if (hp < 0) hp = 0;
+
+            hpFill.style.width = hp + '%';
+            hpText.innerText = 'PV: ' + hp + '%';
+
+            bossImg.classList.remove('shake');
+            void bossImg.offsetWidth;
+            bossImg.classList.add('shake');
+
+            spawnFloater(word);
+
+            input.value = ''; input.focus();
+
+            if (hp === 0) setTimeout(winGame, 800);
+        }
+
+        function spawnFloater(text) {
+            const el = document.createElement('div');
+            el.className = 'floater'; el.innerText = text;
+            el.style.left = (40 + Math.random() * 20) + '%';
+            el.style.top = (40 + Math.random() * 20) + '%';
+            el.style.color = `hsl(${Math.random() * 360}, 80%, 60%)`;
+            document.body.appendChild(el);
+            setTimeout(() => el.remove(), 1500);
+        }
+
+        function winGame() {
+            document.getElementById('boss-phase').style.display = 'none';
+            const victory = document.getElementById('victory-phase');
+            victory.style.display = 'flex';
+            sfxWin.play().catch(e => console.log(e));
+
+            // Start Confetti
+            setInterval(spawnConfetti, 100);
+        }
+
+        function spawnConfetti() {
+            const confetti = document.createElement('div');
+            confetti.className = 'confetti';
+            confetti.style.left = Math.random() * 100 + 'vw';
+            confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
+            confetti.style.animationDuration = (2 + Math.random() * 3) + 's';
+            document.body.appendChild(confetti); // Append to body to fall over everything
+            setTimeout(() => confetti.remove(), 5000);
+        }
+
+        window.closeGame = function () {
+            // MARQUER LE JEU COMME FINI POUR AFFICHER L'ETOILE
+            localStorage.setItem('game_finished', 'true');
+            // NETTOYER LA CORRUPTION
+            localStorage.removeItem('day24_corrupted');
+
+            // RELOAD GENERAL
+            if (window.parent) {
+                window.parent.location.reload();
+            } else {
+                location.reload();
+            }
+        };
+    </script>
+</body>
+
+</html>
