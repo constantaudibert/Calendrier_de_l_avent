@@ -88,7 +88,9 @@
 
     <div id="popup" class="modal" style="display: none;">
         <div class="modal-content">
-            <span class="close-button" onclick="document.getElementById('popup').style.display='none';">&times;</span>
+            <span class="close-button" onclick="document.getElementById('popup').style.display='none'; 
+                var cd = document.getElementById('countdown-container'); 
+                if(cd && localStorage.getItem('day24_corrupted') === 'true') cd.style.display='block';">&times;</span>
             <div id="popup-content">
             </div>
         </div>
@@ -100,6 +102,16 @@
             <span class="text">SOLUTION DANS : </span>
             <span id="timer">--:--:--</span>
         </button>
+    </div>
+
+    <!-- REINFORCEMENTS BUTTON (Hidden by default) -->
+    <div id="reinforcements-btn" onclick="loadContent('renforts')"
+        style="display:none; position:fixed; bottom:20px; left:20px; z-index:1001; cursor:pointer;">
+        <!-- Using a custom style or existing class -->
+        <div
+            style="background:#e74c3c; color:white; padding:15px; border-radius:10px; border:2px solid white; box-shadow:0 0 10px red; font-family:'Satisfy'; font-size:1.2em; animation: pulse 2s infinite;">
+            🚨 RENFORTS
+        </div>
     </div>
 
     <script src="scrabble_game.js"></script>
